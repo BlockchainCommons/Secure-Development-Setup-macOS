@@ -1,20 +1,20 @@
-# Blockchain Commons `$projectname`
+# Secure Development Setup for git, github, gpg & ssh
 
-**`$ProjectDescription`** is …
+This repo offers documentation and scripts for setting up git, github, gpg and ssh on a new computer
 
 ## Additional Information
 
-The following files contain…
+At this time these documents and scripts are focused on installation of a secure developer tool environment for a macOS Catalina 10.15.4 computer.
 
-* `$ListOfEssentialDocs`
+In particular, the scripts in this repo are being tested using a VMware Fusion instance to allow for use of snapshots and restoration, and thus they have not been tested against a real Macintosh hardware at this time. They also are intended for use on a NEW Macintosh, and may destroy or compromise your development environment on an existing Macintosh.
 
-## Status - Late Alpha
+## Status - EARLY DRAFT
 
-` $projectname`  is currently under active development and in the late alpha testing phase. It should not be used for production tasks until it has had further testing and auditing.
+This contents of this repo are currently under active development but are only in EARLY DRAFT stage. It should not be used for production tasks until it has had further testing and auditing.
 
 ## Origin, Authors, Copyright & Licenses
 
-Unless otherwise noted (either in this [/README.md](./README.md) or in the file's header comments) the contents of this repository are Copyright © 2020 by Blockchain Commons, LLC, and are [licensed](./LICENSE) under the [spdx:BSD-2-Clause Plus Patent License](https://spdx.org/licenses/BSD-2-Clause-Patent.html).
+Unless otherwise noted (either in this [/README.md](./README.md) or in a file's header comments) the contents of this repository are Copyright © 2020 by Blockchain Commons, LLC, and are [licensed](./LICENSE) under the [spdx:BSD-2-Clause Plus Patent License](https://spdx.org/licenses/BSD-2-Clause-Patent.html).
 
 In most cases, the authors, copyright, and license for each file reside in header comments in the source code. When it does not, we have attempted to attribute it accurately in the table below.
 
@@ -26,13 +26,11 @@ This table below also establishes provenance (repository of origin, permalink, a
 
 ### Dependencies
 
-To build  `$projectname` you'll need to use the following tools:
-
-- autotools - Gnu Build System from Free Software Foundation ([intro](https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html)).
+None.
 
 ### Derived from…
 
-This  `$projectname` project is either derived from or was inspired by:
+This project is either derived from or was inspired by:
 
 - [community/repo-name/](https://github.com/community/repo-name) — Repo that does what, by [developer](https://github.com/developer)  or from  [community](https://community.com).
 
