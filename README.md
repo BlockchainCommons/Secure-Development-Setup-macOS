@@ -1,16 +1,28 @@
-# Secure Development Setup for git, github, gpg & ssh
+# Secure Development Setup for macOS
 
-This repo offers documentation and scripts for setting up git, github, gpg and ssh on a new computer
+### ***by Christopher Allen, Shannon Appelcline, and Namcios***
+
+This repo offers documentation and scripts for setting up git, github, gpg and ssh on a new Mac computer.
 
 ## Additional Information
 
-At this time these documents and scripts are focused on installation of a secure developer tool environment for a macOS Catalina 10.15.4 computer.
+At this time these documents and scripts are focused on installation of a secure developer tool environment for a macOS Big Sur 11.0 computer.
 
 In particular, the scripts in this repo are being tested using a VMware Fusion instance to allow for use of snapshots and restoration, and thus they have not been tested against a real Macintosh hardware at this time. They also are intended for use on a NEW Macintosh, and may destroy or compromise your development environment on an existing Macintosh.
+
+> NOTE: Compatibility with M1 Macs is not currently ensured.
 
 ## Status - EARLY DRAFT
 
 This contents of this repo are currently under active development but are only in EARLY DRAFT stage. It should not be used for production tasks until it has had further testing and auditing.
+
+### Roadmap
+
+July 2021
+- Completion of documentation
+
+August 2021
+- Completion of scripts
 
 ## Origin, Authors, Copyright & Licenses
 
@@ -26,15 +38,34 @@ This table below also establishes provenance (repository of origin, permalink, a
 
 ### Dependencies
 
-None.
+None
+
+### Libraries
+
+The following external libraries are used with `$projectname`:
+
+- [community/repo-name](https://github.com/community/repo-name) — What the library does (use OR fork [version] OR include [version]).
+
+Libraries may be marked as `use` (the current version of the library is used), `fork` (a specific version has been forked to the BCC repos for usage), or `include` (files from a specific version have been included).
 
 ### Derived from…
 
 This project is either derived from or was inspired by:
 
-- [community/repo-name/](https://github.com/community/repo-name) — Repo that does what, by [developer](https://github.com/developer)  or from  [community](https://community.com).
+- [prepare-osx-for-webdev](https://github.com/ChristopherA/prepare-osx-for-webdev) — Script to prepare a Mac computer for web development and command-line tools, by [Christopher Allen](https://github.com/ChristopherA).
 
-### Used with…
+- [intro-mac-command-line](https://github.com/ChristopherA/intro-mac-command-line) — An introduction to the Mac Command Line, by [Christopher Allen](https://github.com/ChristopherA).
+
+## Subsequent Usage
+
+### Adapted by...
+
+These are adaptations, conversions, and wrappers that make `$projectname` available for other languages:
+
+- [community/repo-name/](https://github.com/community/repo-name) — Repo that does what, by [developer](https://github.com/developer)  or from  [community](https://community.com)(language).
+
+
+### Used with...
 
 These are other projects that work with or leverage `$projectname`:
 
@@ -53,6 +84,10 @@ We encourage public contributions through issues and pull requests! Please revie
 ### Discussions
 
 The best place to talk about Blockchain Commons and its projects is in our GitHub Discussions areas.
+
+[**Gordian System Discussions**](https://github.com/BlockchainCommons/Gordian/discussions). For users and developers of the Gordian system, including the Gordian Server, Bitcoin Standup technology, QuickConnect, and the Gordian Wallet. If you want to talk about our linked full-node and wallet technology, suggest new additions to our Bitcoin Standup standards, or discuss the implementation our standalone wallet, the Discussions area of the [main Gordian repo](https://github.com/BlockchainCommons/Gordian) is the place.
+
+[**Wallet Standard Discussions**](https://github.com/BlockchainCommons/AirgappedSigning/discussions). For standards and open-source developers who want to talk about wallet standards, please use the Discussions area of the [Airgapped Signing repo](https://github.com/BlockchainCommons/AirgappedSigning). This is where you can talk about projects like our [LetheKit](https://github.com/BlockchainCommons/bc-lethekit) and command line tools such as [seedtool](https://github.com/BlockchainCommons/bc-seedtool-cli), both of which are intended to testbed wallet technologies, plus the libraries that we've built to support your own deployment of wallet technology such as [bc-bip39](https://github.com/BlockchainCommons/bc-bip39), [bc-slip39](https://github.com/BlockchainCommons/bc-slip39), [bc-shamir](https://github.com/BlockchainCommons/bc-shamir), [Sharded Secret Key Reconstruction](https://github.com/BlockchainCommons/bc-sskr), [bc-ur](https://github.com/BlockchainCommons/bc-ur), and the [bc-crypto-base](https://github.com/BlockchainCommons/bc-crypto-base). If it's a wallet-focused technology or a more general discussion of wallet standards,discuss it here.
 
 [**Blockchain Commons Discussions**](https://github.com/BlockchainCommons/Community/discussions). For developers, interns, and patrons of Blockchain Commons, please use the discussions area of the [Community repo](https://github.com/BlockchainCommons/Community) to talk about general Blockchain Commons issues, the intern program, or topics other than the [Gordian System](https://github.com/BlockchainCommons/Gordian/discussions) or the [wallet standards](https://github.com/BlockchainCommons/AirgappedSigning/discussions), each of which have their own discussion areas.
 
