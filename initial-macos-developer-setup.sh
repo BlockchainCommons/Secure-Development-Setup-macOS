@@ -1,4 +1,3 @@
-```shell
 #!/bin/bash
 
 ##  Original file location: 
@@ -366,5 +365,3 @@ SCRIPT_SUCCESS="1"
 log "Your system has been setup for development!"
 
 exit
-```
-
