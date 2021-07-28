@@ -3,16 +3,16 @@
 Part 2 - Preparation and Installation
 =====================================
 
-Every Mac supports a large numer of command line tools, however, not every program that you need for web development is included by default. This tutorial instructs you on how to prepare and configure your Mac to make it a powerful web development system.
+Every Mac supports a large numer of command line tools, however, not every program that you need for development is included by default. This tutorial instructs you on how to prepare and configure your Mac to make it a powerful development system.
 
-You do not need to deeply understand all the commands that are used here — they are explained briefly, but you do not lean to learn them yet. I am explaining only because it is YOUR computer and you should know what and why these tools have been added.
+You do not need to deeply understand all the commands that are used here — they are explained briefly, but you do not need to learn them yet. I am explaining only because it is YOUR computer and you should know what and why these tools have been added.
 
 System Updates
 --------------
 
-The first thing you need to do is to make sure that you have the most recent version of the OS, which as of the writing of this intro is Mac OS X Yosemite 10.10.3. Everything in these introduction files should work on previous version of the the OS, however, when you are doing web development it is important to have the most recent updates for security reasons.
+The first thing you need to do is to make sure that you have the most recent version of the OS, which as of the writing of this intro is Mac OS X Big Sur 11.5.1. Everything in these introduction files should work on previous version of the the OS, however, when you are doing development work it is important to have the most recent updates for security reasons.
 
-You can get all your system updates by going the the _App Store…_ item under the Apple Menu, clicking on the _Updates_ tab and pressing the _Update All_ button. However, you can also do it from the command line.
+You can get all your system updates by going the the _About This Mac_ item under the Apple Menu, clicking on the _Software Update_ button and pressing the _Update Now_ button. However, you can also do it from the command line.
 
 The `sudo` command is used to run programs that need additional privileges to change your computer, and thus your Mac's administrative password. `/usr/sbin/softwareupdate -l` is the program that checks with Apple's update servers for the most recent version. You may need to execute this command multiple times, or even reboot your system if your Mac is not current.
 
@@ -75,8 +75,8 @@ All of these folders are optional — many you will not use until much later in 
 
 * ~/.dotfiles # This is where I backup my dotfiles (explained later) and store some other useful tools.
 * ~/.dotfiles/bin # This is where I keep small command line scripts that I use regularly.
-* ~/Applications # This is where I keep any GUI apps that are installed for development purposes seperate from those root /Applications folder.
-* ~/code # This is where store the source code from open source repositories from github
+* ~/Applications # This is where I keep any GUI apps that are installed for development purposes separate from those root /Applications folder.
+* ~/code # This is where I store the source code from open source repositories from github
 * ~/Pool # This is where I store large files that I exclude from backing up on Time Machine. Great for movies, large installer files, etc. that I have backuped up elsewhere or are easily downloaded again from the net.
 * ~/projects # This is where I keep repositories of my own source code or others work-in-progress.
 * ~/temp # This is where I keep code and projects that are just temporary and can be deleted at any time. I practice here.
@@ -99,14 +99,14 @@ Installing Brew
 
 Next we are going to install [Homebrew](http://brew.sh) (known as `brew` for short), a software package manager.
 
-You can consider `brew` to be an app store for open source web apps and developer tools. There are thousands of different open source code bases, all with various dependences on each other, and each requiring different configurations for what kind of computer OS it is running on (Linux, Unix, Mac, Windows, etc.). Brew manages those complexities. If request to install a particular tool it that needs other packages, tools or libraries to run, Brew will first install them in the correct order. Brew also stores its files in some specific ways that are best practices so that different tools don't interfere with each other.
+You can consider `brew` to be an app store for open source web apps and developer tools. There are thousands of different open source code bases, all with various dependences on each other, and each requiring different configurations for what kind of computer OS it is running on (Linux, Unix, Mac, Windows, etc.). Brew manages those complexities. If you request to install a particular tool that needs other packages, tools or libraries to run, Brew will first install them in the correct order. Brew also stores its files in some specific ways that are best practices so that different tools don't interfere with each other.
 
-Brew is not installed on your Mac by default, so you'll need to run a script to install it. They provide a script to install it on their github site, which is run by `ruby` which is installed on your Mac by default. WARNING: Be cautious whenever someone asks you to run a script that has `curl` command in it, because if the author is malicious they can corrupt your system or make it vulnerable. In this case the script is run from a trusted website (github), and is from a trusted account there (Homebrew). I suggest you go to the [Homebrew](http://brew.sh) website and confirm that this is the correct script to use.
+Brew is not installed on your Mac by default, so you'll need to run a script to install it. They provide a script to install it on their github site, which is run by `bash` which is installed on your Mac by default. WARNING: Be cautious whenever someone asks you to run a script that has `curl` command in it, because if the author is malicious they can corrupt your system or make it vulnerable. In this case the script is run from a trusted website (github), and is from a trusted account there (Homebrew). I suggest you go to the [Homebrew](http://brew.sh) website and confirm that this is the correct script to use.
 
 This script may ask you for your administrator password.
 
 ```
-$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ==> This script will install:
 /usr/local/bin/brew
 /usr/local/share/doc/homebrew
@@ -231,41 +231,55 @@ git version 2.3.5
 $
 ```
 
-Install Cask
-------------
+Installing GitHub CLI
+---------------------
 
-[Cask](http://caskroom.io) is a special brew application that installs a number of Mac GUI apps. I find it particularly useful for installing those developer apps require an installer or a .dmg file. One other useful thing that it does is that it puts the app into your ~/Applications folder, keeping them seperate from your other apps.
+[GitHub CLI](https://cli.github.com/) brings GitHub to your terminal. It includes a set of features and commands to facilitate your interaction with GitHub. It allows you to work with issues, pull requests, checks, releases, and more directly in your terminal. You can find all the available `gh` commands in the [online manual](https://cli.github.com/manual/) and some `gh` tips [here](https://gist.github.com/ChristopherA/3cca24936fb2c84786a29f67bacacd3e).
+
+Install `gh` with `brew`:
+```
+$ brew install gh
+```
+Then, you can easily authenticate with your GitHub account with:
+```
+$ gh auth login
+```
+
+Installing Casks
+----------------
+
+[Homebrew Cask](https://github.com/Homebrew/homebrew-cask) extends Homebrew to allow the installation of GUI applications on a Mac. I find it particularly useful for installing those developer apps that require an installer or a .dmg file. Homebrew Cask will automatically verify the download's checksums for you. One other useful thing that it does is that it puts the app into your ~/Applications folder, keeping them seperate from your other apps.
+
+Cask is already built into Homebrew, so you don't need to install anything else. In order to install a GUI app (a Cask), for example the productivity app Alfred, you can just do:
 
 ```
-$ brew tap caskroom/cask
-Checking out v1.0.1 in /usr/local/Homebrew...
-To checkout v1.0.1 in /usr/local/Homebrew run:
-  'cd /usr/local/Homebrew && git checkout v1.0.1
-==> Tapping caskroom/cask
-Cloning into '/usr/local/Homebrew/Library/Taps/caskroom/homebrew-cask'...
-remote: Counting objects: 3431, done.
-remote: Compressing objects: 100% (3412/3412), done.
-remote: Total 3431 (delta 37), reused 452 (delta 13), pack-reused 0
-Receiving objects: 100% (3431/3431), 1.16 MiB | 0 bytes/s, done.
-Resolving deltas: 100% (37/37), done.
-Checking connectivity... done.
-Tapped 0 formulae (3,438 files, 3.6M)
-$
+$ brew install alfred
+==> Downloading https://cachefly.alfredapp.com/Alfred_4.2.1_1187.dmg
+######################################################################## 100.0%
+==> Verifying SHA-256 checksum for Cask 'alfred'.
+==> Installing Cask alfred
+==> Moving App 'Alfred 4.app' to '/Applications/Alfred 4.app'.
+🍺  alfred was successfully installed!
 ```
+
+Uninstalling Casks
+------------------
+
+It is as easy to uninstall a Cask as it was to install it:
+```
+$ brew uninstall alfred
+```
+This will uninstall the Cask and remove the application which was moved to `/Applications`.
 
 Installing the Atom Text Editor
 -------------------------------
 
-Next we are going to use `brew cask` to install the Atom text editor. There are many powerful command line text editors out there (and a constant battle between fans of emacs vs those for vim), but learning them is outside the scope of this tutorial. In the meantime there is a very powerful, free and open source GUI text editor optimized for command line and web developers called Atom. One of its best features is its integration with Git.
+Next we are going to use `brew` to install the Atom text editor. There are many powerful command line text editors out there (and a constant battle between fans of emacs vs those for vim), but learning them is outside the scope of this tutorial. In the meantime there is a very powerful, free and open source GUI text editor optimized for command line and web developers called Atom. One of its best features is its integration with Git.
 
-We will install it with `brew cask`
+We will install it with `brew`
 
 ```
-$ brew cask install atom
-==> We need to make Caskroom for the first time at /opt/homebrew-cask/Caskroom
-==> We'll set permissions properly so we won't need sudo in the future
-Password:
-chmod: /opt: No such file or directory
+$ brew install atom
 ==> Downloading https://atom.io/download/mac
 ######################################################################## 100.0%
 ==> Symlinking App 'Atom.app' to '/Users/ChristopherA/Applications/Atom.app'
@@ -283,32 +297,39 @@ $ atom ~/temp/temp.txt
 ```
 You can now edit this file using the familar Mac GUI experience.
 
-Install Node
-------------
+Installing the Typora Markdown Editor
+-------------------------------------
 
-[Node](https://nodejs.org) is a popular web server tool that runs Javascript. Installed on the Mac, it also provides an interactive environment for learning how to Javascript code and use various frameworks. We are installing it because a number of tutorials later use it.
+[Typora](https://typora.io/) is a distraction-free Markdown editor and reader. One cool thing about it is that it seamlessly provides you with a live preview as you type. So although you're typing in Markdown, you see the result in real time. This can be very useful to make sure you're writing what you're intending to write.
 
+We can download Typora as a `brew` Cask as well:
 ```
-$ brew install node
-==> Downloading https://homebrew.bintray.com/bottles/node-0.12.2_1.yosemite.bott
-######################################################################## 100.0%
-==> Pouring node-0.12.2_1.yosemite.bottle.tar.gz
-==> Caveats
-If you update npm itself, do NOT use the npm update command.
-The upstream-recommended way to update npm is:
-  npm install -g npm@latest
+$ brew install typora
+```
+Similar to Atom, you can open a file into Typora directly in the command line. But it isn't as simple:
+```
+$ touch ~/temp/temp2.txt
+$ open -a typora ~/temp/temp2.txt
+```
+You can create a persistent alias for that in your configuration file:
+```
+$ echo 'alias typora="open -a typora"' >> ~/.zshrc
+$ source ~/.zshrc
+```
+`echo` writes any argument passed into the standard output. In this case, we want it to write to our configuration file `~/.zshrc`, so we tell it so with `>>` to define where we want the output to go. It will then write a line at the end of the specified file, containing what we put under `' '`.
 
-Bash completion has been installed to:
-  /usr/local/etc/bash_completion.d
-==> Summary
-🍺  /usr/local/Cellar/node/0.12.2_1: 2603 files, 28M
-$
+We do `source ~/.zshrc` to refresh our configuration file. The system will pull the most recent version of our file and update its configurations. We need to do that so the system becomes aware of our newly defined alias.
+
+Now you can just do:
+```
+$ touch ~/temp/temp3.txt
+$ typora ~/temp/temp3.txt
 ```
 
 Web Get
 -------
 
-I find the `wget` tool to be very useful. Point it to a URL and it downloads the contents to a file. You can also do this with the built-in `curl` tool, but I find `wget` very useful at time.
+I find the `wget` tool to be very useful. Point it to a URL and it downloads the contents to a file. You can also do this with the built-in `curl` tool, but I find `wget` very useful at times.
 
 ```
 $ brew install wget
@@ -354,22 +375,13 @@ Aeguss-MacBook-Pro:intro-mac-command-line ChristopherA$
 Brew & Cask Cleanup
 -------------------
 
-Ater we `brew` or `brew cask` anything it is best practices to tell brew to cleanup. You don't have to do this after each item brew, you can brew a number of items at once and only cleanup after.
+Ater we `brew` anything it is best practices to tell brew to cleanup. You don't have to do this after each item brew, you can brew a number of items at once and only cleanup after.
 
 ```
-$ brew linkapps --local
-Finished linking. Find the links under /Users/ChristopherA/Applications.
+$ brew doctor
+Your system is ready to brew.
 $ brew cleanup
-$ brew prune
-Pruned 0 dead formulae
-$ brew cask cleanup
-brew cask cleanup
-==> Removing dead symlinks
-Nothing to do
-==> Removing cached downloads
-/Library/Caches/Homebrew/atom-latest
-/Library/Caches/Homebrew/Casks/atom-latest
-$
+Removing: /Library/Caches/Homebrew/Cask/atom--1.56.0.zip... (202.6MB)
 ```
 
 Final Cleanup
