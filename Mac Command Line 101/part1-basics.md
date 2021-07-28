@@ -1,4 +1,4 @@
-> Note: This document is from Christopher Allen's [Intro to the Mac Command Line](https://github.com/ChristopherA/intro-mac-command-line) repository.
+> Note: This document is an updated version of the Part 1 from Christopher Allen's [Intro to the Mac Command Line](https://github.com/ChristopherA/intro-mac-command-line).
 
 Command Line Basics
 ===================
@@ -27,11 +27,11 @@ The text before and including the $ is known as the _prompt_. The _command line_
 
 The 🁢 symbol is the location of your _text cursor_ on the command line. Anything you type will appear under the text cursor and the text cursor will move to the next spot.
 
-All the text you see in the console was created by what is known as the _shell_ application (the Mac defaults to the shell application known as _bash_).
+All the text you see in the console was created by what is known as the _shell_ application (the Mac defaults to the shell application known as _zsh_).
 
 Often the words terminal, console, command line, shell, or bash are used interchangeably, but these each are are all slightly different.
 
-Someday you may want to switch to a more sophisticated Terminal applications (_iTerm_ is popular), or switch to a more sophisted text shell (_tsch_ is popular), or both. For the purpose of this _Intro to the Command Line_ tutorial we will only be using the default Mac _Terminal_ app, and the _bash_ command line text shell.
+Someday you may want to switch to a more sophisticated Terminal applications (_iTerm_ is popular), or switch to a more sophisted text shell (_tsch_ is popular), or both. For the purpose of this _Intro to the Command Line_ tutorial we will only be using the default Mac _Terminal_ app, and the _zsh_ command line text shell.
 
 Running a Command
 -----------------
@@ -611,7 +611,7 @@ Like the `more` command, typing `space` moves down a window full of text, and ty
 
 Many, but not all commands will give you a brief summary of what they do if you type them without any options, or with the option `-h` or `--help`. Many options may be cryptic, but the man page for the commands should explain them in more detail.
 
-MacOSX Bash Shell Keys
+MacOSX Zsh Shell Keys
 ----------------------
 
 ### The following work everywhere
@@ -640,7 +640,7 @@ Ctrl + T    Swap the last two characters before the cursor
 Ctrl + Y    Pastes "Yanks" text that was Killed (Ctrl+K)
 ```
 
-### The following only work in the Mac OSX Terminal using the default Bash shell:
+### The following only work in the Mac OSX Terminal using the default zsh shell:
 
 ```
 Ctrl + C    Kill whatever you are running
