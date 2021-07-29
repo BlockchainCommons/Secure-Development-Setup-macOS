@@ -255,6 +255,11 @@ When asked how to authenticate, select "Paste an authentication token." Open you
 
 You should be set up with `gh` by now!
 
+Set Up GPG
+----------
+
+You should now set up GPG for commit signature verification. Just refer to [this guide](../gpg-with-github.md) and set it up before moving forward!
+
 Installing Casks
 ----------------
 
@@ -381,6 +386,26 @@ build variables:
 🍺  /usr/local/Cellar/wget/1.16.3: 9 files, 1.5M
 Aeguss-MacBook-Pro:intro-mac-command-line ChristopherA$
 ```
+
+Install GitHub Desktop
+----------------------
+
+:warning: Before moving forward, make sure you have done everything in this guide and have also done [GPG configuration](../gpg-with-github.md). Particularly, make sure you opted to _enable GPG signing for all repositories using the --global flag in that tutorial._ If you are certain you have gone through all the steps to set up GPG but can't remember if you enabled GPG signing for your commits globally or not, you can quickly open a Terminal window and type: `
+
+If you do not enjoy using the command line, you can contribute to open source software using GitHub Desktop, which you can download as a `brew` Cask.
+```
+$ brew install github
+==> Downloading https://desktop.githubusercontent.com/releases/2.9.0-4806a6dc/GitHubDesktop-x64.zip
+==> Installing Cask github
+==> Moving App 'GitHub Desktop.app' to '/Applications/GitHub Desktop.app'
+==> Linking Binary 'github.sh' to '/usr/local/bin/github'
+🍺  github was successfully installed!
+```
+You will then be able to find the GitHub Desktop application in your `/Applications` folder. Go ahead and give that a double-click and open it. It will prompt for you to sign in, which you should do. It will open a window in your default browser, through which you will be requested to sign into your GitHub account. Do that and authorize GitHub Desktop to obtain your GitHub profile information.
+
+Now, before moving forward, go to GitHub Desktop's _Preferences_ (you can use the `Cmd + ,` shortcut within the app). Under _Account_, you should be signed in. Now, head over to _Git_ in the same window and _make sure your selected email matches both your committer email and your GPG key email!_ If it doesn't, change it for the one that does.
+
+If you have set up brew, git, gh, github desktop, ssh, (basically everything in this guide so far) correctly, you will be able to work with GitHub and contribute to open source projects using the nice UX of GitHub Desktop –– and your commits will be automatically signed!
 
 Brew Cleanup
 -------------------
