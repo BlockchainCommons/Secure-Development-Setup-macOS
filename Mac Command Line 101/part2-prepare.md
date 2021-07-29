@@ -50,10 +50,10 @@ Copyright 2002-2012 Apple Inc.
 
 Finding available software
 
-Downloading Command Line Tools (OS X 10.10)
-Downloaded Command Line Tools (OS X 10.10)
-Installing Command Line Tools (OS X 10.10)
-Done with Command Line Tools (OS X 10.10)
+Downloading Command Line Tools (OS X 11.5)
+Downloaded Command Line Tools (OS X 11.5)
+Installing Command Line Tools (OS X 11.5)
+Done with Command Line Tools (OS X 11.5)
 Done.
 $/bin/rm /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
 ```
@@ -69,7 +69,7 @@ From now on, the Mac App Store's regular System Update will keep these tools cur
 Create Some Additional Folders in Home
 --------------------------------------
 
-I find it useful to prepare in advance some additional folder in my home "~" directory. The convention I use is that if the folder starts with a Capital, the folder contains items for Finder's GUI. If the folder begins with a lower-case letter (making it faster to type) then it is to used by the CLI.
+I find it useful to prepare in advance some additional folder in my home "~" directory. The convention I use is that if the folder starts with a Capital, the folder contains items for Finder's GUI. If the folder begins with a lower-case letter (making it faster to type) then it is to be used by the CLI.
 
 All of these folders are optional — many you will not use until much later in this tutorial:
 
@@ -245,6 +245,16 @@ Then, you can easily authenticate with your GitHub account with:
 $ gh auth login
 ```
 
+It will prompt you for some information.
+
+If you want to log into a personal account, select `GitHub.com`.
+
+Select your preferred auth method. Selecting `SSH` will help you create [ssh keys for usage with GitHub](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh). You can then select "upload your SSH public key to your GitHub account."
+
+When asked how to authenticate, select "Paste an authentication token." Open your [tokens section on GitHub](https://github.com/settings/tokens), click _Generate new token_. Now you need to give it a descriptive name, like _github cli_ for example and select its permissions. `gh` requires at least three: `repo`, `read:org` and `admin:public_key`. Select those, and any additional ones if you so wish, and hit create! Now you just need to copy that token and paste it into the terminal. _Do not close the browser window before copying the token! This is your only chance to copy it, it will disapear afterwards. If you mess up, generate a new token._
+
+You should be set up with `gh` by now!
+
 Installing Casks
 ----------------
 
@@ -372,7 +382,7 @@ build variables:
 Aeguss-MacBook-Pro:intro-mac-command-line ChristopherA$
 ```
 
-Brew & Cask Cleanup
+Brew Cleanup
 -------------------
 
 Ater we `brew` anything it is best practices to tell brew to cleanup. You don't have to do this after each item brew, you can brew a number of items at once and only cleanup after.
