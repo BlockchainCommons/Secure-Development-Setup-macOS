@@ -51,19 +51,23 @@ However, even after publishing your revocation certificate, others will still be
 To generate the revocation certificate, you will need either "Your Name", email, or KEY_ID. So open up a Terminal window and type one of the following, depending on the info you choose to feed the command with:
 
 ```
-$ gpg --output revoke.asc --gen-revoke "Your Name"
+$ gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke "Your Name"
 ```
 OR
 ```
-$ gpg --output revoke.asc --gen-revoke your.email@example.com
+$ gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke your.email@example.com
 ```
 OR
 ```
-$ gpg --output revoke.asc --gen-revoke KeyID
+$ gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke KeyID
 ```
 If you can't remember, you can grab your KeyID with the command `gpg --list-secret-keys --keyid-format=long`. It will be next to `sec`, right after the key type you have, for example `rsa2048/<your-key-id>`.
 
 You might be asked the reason for creating the revocation certificate. You can just type 0 for "no reason specified" and then, if you like, enter some description. Then you can confirm it and your revocation certificate will be generated.
+
+You might want to print a hardcopy of the certificate and keep it somewhere safe (somewhere you keep sensitive documents). But note that the printer itself might be a compromise.
+
+If someone gets access to your key's revocation certificate, they will be able to revoke your key, so keep it safe. _But_ if they happen to get access to your private key as well, then having them get access to your revocation certificate is a desirable thing.
 
 ## Associating an Email Address With Your GPG Key
 
