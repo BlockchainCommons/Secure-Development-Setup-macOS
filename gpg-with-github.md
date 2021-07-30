@@ -4,7 +4,7 @@ GitHub allows you to use GPG to sign commits. You can use an existing GPG key or
 
 You can find GitHub's official documentation about GPG commit signature verification [here](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/about-commit-signature-verification#gpg-commit-signature-verification). And here's a [GPG cheatsheet](http://irtfweb.ifa.hawaii.edu/~lockhart/gpg/).
 
-:warning: Before starting, make sure you have GPG command line tools installed on your machine and update it if it's outdated already. If you need to or would rather download and install it fresh, head over to [GnuPG's official download page](https://www.gnupg.org/download/) and install the _latest version_ of GPG for your operating system.
+:warning: Before starting, make sure you have GPG command line tools installed on your machine and update it if it's outdated already. If you need to or would rather download and install it fresh, head over to [GnuPG's official download page](https://www.gnupg.org/download/) and install the _latest version_ of GPG for your operating system. Alternatively, you can just do `brew install gnupg` on a Terminal window and Brew will install it for you.
 
 :warning: Also make sure you have already [verified your GitHub email](https://docs.github.com/en/articles/verifying-your-email-address) and [set your commit email address](https://docs.github.com/en/articles/setting-your-commit-email-address).
 
@@ -34,7 +34,11 @@ Again, make sure you have the latest version of GPG for your operating system in
 5. Now, it is asking for how long should the key be valid. If you press `Enter` and accept the default, your keys will never expire. Specify a desired length of time otherwise.
 6. Verify your selections for errors, see if they're correct.
 7. Enter your user ID information
-8. Choose a secure passphrase. This serves _kind of_ like a password for using your GPG key pair. So make sure you don't forget it.
+8. Now you need to choose a secure and memorable passphrase. Since our human brains are [bad](http://people.ischool.berkeley.edu/~nick/aaronson-oracle/) at generating entropy, follow these steps:
+   1. Grab a dice and open up [EFF's word list](https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt).
+   2. Your passphrase should consist of at least 4 but _ideally 6 words_. You need 5 dice rolls for each word.
+   3. So roll the dice 5 times and that, in order, will give you your first word by matching it on EFF's word list.
+   4. Do that 6 times and you will have a secure and memorable passphrase to use with your new GPG key. Make sure you don't forget it!
 
 ### [Optional] Generate a Revocation Certificate
 
