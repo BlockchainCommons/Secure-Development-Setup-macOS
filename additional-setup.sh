@@ -1,7 +1,15 @@
 #!/bin/bash
 
-## Configure Git and credentials, GitHub CLI, GPG, GitHub Desktop
-#  Part of the code in this script came from or was adapted from:
+##  Configure Git and credentials, GitHub CLI, GPG, GitHub Desktop, text editor
+
+##  [WIP] Not suitable for deployment yet.
+#   TODO:
+#   - [ ] Finish first draft
+#   - [ ] Test first working solution
+#   - [ ] Refactor script (https://kfirlavi.herokuapp.com/blog/2012/11/14/defensive-bash-programming/)
+#   - [ ] Test refactored, final script
+
+##  Part of the code in this script came from or was adapted from:
 #  * https://github.com/MikeMcQuaid/strap/blob/master/bin/strap.sh
 #  * https://github.com/BlockchainCommons/Secure-Development-Setup-macOS/blob/master/initial-macos-developer-setup.sh
 
@@ -56,7 +64,7 @@ if [ $(command -v gh) == "" ]; then
     gh auth login
 fi
 
-echo "Do you wish to have new GPG keys created for you and have them linked to your GitHub account? y / n"
+echo "Do you wish to have new GPG keys created for you and have them linked to your GitHub account? y / n: "
 read WANTS_GPG
 
 if [ $WANTS_GPG == "y" ]; then
@@ -92,5 +100,41 @@ if [ $WANTS_GPG == "y" ]; then
     fi
 fi
 
-# TODO: Install GitHub Desktop
-# ask if user wants it installed
+# Ask if user wants GitHub Desktop installed
+echo "Do you wish to install GitHub Desktop? (if you don't like the command line)  y / n: "
+read WANTS_GITHUB_DESKTOP
+
+if [ $WANTS_GITHUB_DESKTOP == "y" ]; then
+    # Install GitHub Desktop
+    printf "Installing GitHub Desktop\n"
+    brew install github
+    printf "Nice! You now have GitHub Desktop installed. Now, go ahead and open it to make sure your email address there, under Preferences > Account, is the same as your GitHub email account!"
+    printf "If the email addresses match, congrats! You can now contribute to open source with signed commits using only GitHub Desktop."
+fi
+
+# Ask which editor the user wants installed
+echo "Which text editor would you like installed?\n
+        1. VS Code -- great for code, text, and markdown\n
+        2. Typora -- great for markdown\n
+        3. Atom -- in-between vs code and typora\n
+        -------------------------------------------\n
+        [1, 2 or 3]: "
+read TEXT_EDITOR
+
+if [ $TEXT_EDITOR == "1" ]; then
+    printf "Installing VS Code\n"
+    brew install visual-studio-code
+fi
+
+if [ $TEXT_EDITOR == "2" ]; then
+    printf "Installing Typora\n"
+    brew install typora
+fi
+
+if [ $TEXT_EDITOR == "3" ]; then
+    printf "Installing Atom\n"
+    brew install atom
+fi
+
+echo "Cleaning up...\n"
+brew cleanup
