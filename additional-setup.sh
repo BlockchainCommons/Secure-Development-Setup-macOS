@@ -1,6 +1,6 @@
 #!/bin/bash
 
-##  Configure Git and credentials, GitHub CLI, GPG, GitHub Desktop, text editor
+##  Install Git, GitHub CLI, GPG, GitHub Desktop, text editor
 
 ##  [WIP] Not suitable for deployment yet.
 #   TODO:
@@ -28,6 +28,7 @@ fi
 groups | grep $Q -E "\b(admin)\b" || abort "Add $USER to the admin group."
 
 # Ask for git credentials
+echo "**************************\n"
 echo "Make sure you have already created your GitHub account online and verified your email!"
 echo "What's your GitHub account name? "
 read GITHUB_NAME
@@ -37,6 +38,7 @@ read GITHUB_EMAIL
 
 # Install and setup Git
 if [ $(command -v git) == "" ]; then
+    echo "**************************\n"
     printf "Downloading and installing Git\n"
     brew install git
     printf "Configuring Git\n"
@@ -51,10 +53,12 @@ fi
 
 # Install and setup gh
 if [ $(command -v gh) == "" ]; then
+    echo "**************************\n"
     printf "Downloading and installing GitHub CLI\n"
     brew install gh
-    printf "Configuring GitHub CLI\n"
-    printf "This will be interactive. Here's what you need to select and/or type after the installation begins:\n"
+    echo "**************************\n"
+    printf "FOLLOW THE STEPS BELOW TO CONFIGURE GITHUB CLI:\n"
+    printf "This will be interactive. Here's what you need to select and/or type through the configuration process:\n"
     printf "1. Select GitHub.com if you're setting up a personal account.\n"
     printf "2. Select your preferred authentication method. Selecting SSH will help you create SSH keys for usage with GitHub. You can then select 'upload your SSH public key to your GitHub account.'\n"
     printf "3. Select 'Paste an authentication token.' You will need to head over to your tokens section on GitHub at: https://github.com/settings/tokens \n"
@@ -64,15 +68,18 @@ if [ $(command -v gh) == "" ]; then
     gh auth login
 fi
 
+echo "**************************\n"
 echo "Do you wish to have new GPG keys created for you and have them linked to your GitHub account? y / n: "
 read WANTS_GPG
 
 if [ $WANTS_GPG == "y" ]; then
     # Install and setup GPG with GitHub
     if [ $(command -v gpg) == "" ]; then
+        echo "**************************\n"
         printf "Downloading and installing GPG.\n"
         brew install gnupg pinentry-mac
-        printf "Creating a new GPG keypair.\n"
+        echo "**************************\n"
+        printf "FOLLOW THE STEPS BELOW TO CREATE & CONFIGURE GPG:\n"
         printf "This will be interactive. You can press 'return' / 'enter' to accept the defaults on the first two steps.\n"
         printf "On the third step, select make the key expire in one year by typing 1y\n"
         printf "When asked your email address, provide the one you use with GitHub!\n"
@@ -81,31 +88,39 @@ if [ $WANTS_GPG == "y" ]; then
         printf "Type in your new passphrase afterwards and make sure you don't forget it! Create a written backup on a secure location if needed!"
         gpg --full-generate-key
 
+        echo "**************************\n"
         printf "Creating a revocation certificate\n"
+        # TODO: create folder first
         gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke $GITHUB_EMAIL
 
+        echo "**************************\n"
         printf "Exporting your public key block to ~/public-key.txt \n"
         gpg --armor --export $GITHUB_EMAIL > ~/public-key.txt
-        printf "Add the contents of ~/public-key.txt to your GitHub account > Settings > SSH and GPG keys > New GPG key\n\n"
+        printf "IMPORTANT: Add the contents of ~/public-key.txt to your GitHub account > Settings > SSH and GPG keys > New GPG key\n\n"
 
+        echo "**************************\n"
         printf "Telling GPG to always use long key formats\n"
         echo "keyid-format long" >> ~/.gnupg/gpg.conf
 
-        printf "Telling git about your signing key\n"
+        echo "**************************\n"
+        printf "Telling git about your signing key locally\n"
         # TODO: grab KEY_ID from gpg --list-secret-keys with awk
         git config --global user.signingkey $KEY_ID
 
-        printf "Allow commit signing in all repos by default\n"
+        echo "**************************\n"
+        printf "Set commit signing in all repos by default\n"
         git config --global commit.gpgsign true
     fi
 fi
 
 # Ask if user wants GitHub Desktop installed
-echo "Do you wish to install GitHub Desktop? (if you don't like the command line)  y / n: "
+echo "**************************\n"
+echo "Do you wish to install GitHub Desktop? (an option if you don't like the command line)  y / n: "
 read WANTS_GITHUB_DESKTOP
 
 if [ $WANTS_GITHUB_DESKTOP == "y" ]; then
     # Install GitHub Desktop
+    echo "**************************\n"
     printf "Installing GitHub Desktop\n"
     brew install github
     printf "Nice! You now have GitHub Desktop installed. Now, go ahead and open it to make sure your email address there, under Preferences > Account, is the same as your GitHub email account!"
@@ -113,6 +128,7 @@ if [ $WANTS_GITHUB_DESKTOP == "y" ]; then
 fi
 
 # Ask which editor the user wants installed
+echo "**************************\n"
 echo "Which text editor would you like installed?\n
         1. VS Code -- great for code, text, and markdown\n
         2. Typora -- great for markdown\n
@@ -122,19 +138,23 @@ echo "Which text editor would you like installed?\n
 read TEXT_EDITOR
 
 if [ $TEXT_EDITOR == "1" ]; then
+    echo "**************************\n"
     printf "Installing VS Code\n"
     brew install visual-studio-code
 fi
 
 if [ $TEXT_EDITOR == "2" ]; then
+    echo "**************************\n"
     printf "Installing Typora\n"
     brew install typora
 fi
 
 if [ $TEXT_EDITOR == "3" ]; then
+    echo "**************************\n"
     printf "Installing Atom\n"
     brew install atom
 fi
 
+echo "**************************\n"
 echo "Cleaning up...\n"
 brew cleanup
