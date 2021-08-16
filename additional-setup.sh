@@ -1,6 +1,9 @@
 #!/bin/bash
 
-##  Install Git, GitHub CLI, GPG, GitHub Desktop, text editor
+##  Install additional tools for secure development on a Mac
+#
+#   Usage: chmod +x additional-setup.sh
+#   Then run: ./additional-setup.sh
 
 ##  [WIP] Not suitable for deployment yet.
 #   TODO:
