@@ -4,8 +4,8 @@
 
 ##  [WIP] Not suitable for deployment yet.
 #   TODO:
-#   - [ ] Finish first draft
-#   - [ ] Test first working solution
+#   - [ x ] Finish first draft
+#   - [ x ] Test first working solution
 #   - [ ] Refactor script (https://kfirlavi.herokuapp.com/blog/2012/11/14/defensive-bash-programming/)
 #   - [ ] Test refactored, final script
 
@@ -27,17 +27,17 @@ fi
 groups | grep $Q -E "\b(admin)\b" || abort "Add $USER to the admin group."
 
 # Ask for git credentials
-echo "**************************\n"
+echo "**************************"
 echo "Make sure you have already created your GitHub account online and verified your email!"
-echo "What's your GitHub username? "
+printf "What's your GitHub username? "
 read GITHUB_NAME
-echo "What's your GitHub account email? "
+printf "What's your GitHub account email? "
 read GITHUB_EMAIL
 
 
 # Install and setup Git
 if [[ $(command -v git) == "" ]]; then
-    echo "**************************\n"
+    echo "**************************"
     printf "Downloading and installing Git\n"
     brew install git
     printf "Configuring Git\n"
@@ -52,10 +52,10 @@ fi
 
 # Install and setup gh
 if [[ $(command -v gh) == "" ]]; then
-    echo "**************************\n"
+    echo "**************************"
     printf "Downloading and installing GitHub CLI\n"
     brew install gh
-    echo "**************************\n"
+    echo "**************************"
     printf "FOLLOW THE STEPS BELOW TO CONFIGURE GITHUB CLI:\n"
     printf "This will be interactive. Here's what you need to select and/or type through the configuration process:\n"
     printf "1. Select GitHub.com if you're setting up a personal account.\n"
@@ -67,29 +67,26 @@ if [[ $(command -v gh) == "" ]]; then
     gh auth login
 fi
 
-echo "**************************\n"
+echo "**************************"
 printf "Do you wish to have new GPG keys created for you and configured for usage with Git? y / n: "
 read WANTS_GPG
 
 if [[ $WANTS_GPG == "y" ]]; then
     # Install and setup GPG with GitHub
     if [[ $(command -v gpg) == "" ]]; then
-        echo "**************************\n"
-        printf "Downloading and installing GPG.\n"
+        
+        echo "**************************"
+        printf "Downloading and installing GPG and pinentry-mac.\n"
         brew install gnupg pinentry-mac
+        
         # Configure pinentry-mac
         echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
-        #killall gpg-agent
-        echo "default-cache-ttl 600" >> ~/.gnupg/gpg-agent.conf
-        echo "max-cache-ttl 7200" >> ~/.gnupg/gpg-agent.conf
-        # Configure gpg.conf https://help.riseup.net/en/security/message-security/openpgp/best-practices
+        echo 'export GPG_TTY=$(tty)' >> ~/.zshrc
+        
+        # Tell GnuPG to always use the longer, more secure 16-character key IDs
         echo "keyid-format long" >> ~/.gnupg/gpg.conf
-        echo "use-agent" >> ~/.gnupg/gpg.conf
-        echo "auto-key-retrieve" >> ~/.gnupg/gpg.conf
-        echo "no-emit-version" >> ~/.gnupg/gpg.conf
-        echo "no-comments" >> ~/.gnupg/gpg.conf
-        if [[ -r ~/.zshrc ]]; then echo 'export GPG_TTY=$(tty)' >> ~/.zshrc; else echo 'export GPG_TTY=$(tty)' >> ~/.zprofile; fi
-        echo "**************************\n"
+        
+        echo "**************************"
         printf "FOLLOW THE STEPS BELOW TO CREATE & CONFIGURE GPG:\n"
         printf "This will be interactive. You can press 'return' / 'enter' to accept the defaults on the first two steps.\n"
         printf "On the third step, select make the key expire in one year by typing 1y\n"
@@ -99,44 +96,44 @@ if [[ $WANTS_GPG == "y" ]]; then
         printf "Type in your new passphrase afterwards and make sure you don't forget it! Create a written backup on a secure location if needed!\n"
         gpg --full-generate-key
 
-        # Grab KEY_ID for usage later
-        KEY_ID=$(gpg --list-secret-keys --keyid-format=long | grep sec | awk '{print $(NF-4)}' | sed 's/^[^\//]*\//\//' | cut -c 2-)
+        # Grab KEY_ID for later use
+        KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')
 
-        echo "**************************\n"
+        echo "**************************"
         printf "Creating a revocation certificate\n"
-        if [[ $(cd; ls | grep gnupg) == "" ]]; then
+        if [[ $(cd; ls | grep gnupg) == "" ]]; then # create directory
             mkdir ~/gnupg; mkdir ~/gnupg/revocable
         fi
-        gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke $GITHUB_EMAIL
+        gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke $KEY_ID
 
-        echo "**************************\n"
+        echo "**************************"
         printf "Exporting your public key block to ~/public-key.txt \n"
-        gpg --armor --export $GITHUB_EMAIL > ~/public-key.txt
+        gpg --armor --export $KEY_ID > ~/public-key.txt
         printf "IMPORTANT: Add the contents of ~/public-key.txt to your GitHub account > Settings > SSH and GPG keys > New GPG key\n\n"
 
-        echo "**************************\n"
+        echo "**************************"
         printf "Telling git about your signing key locally\n"
         git config --global user.signingkey $KEY_ID
 
-        echo "**************************\n"
+        echo "**************************"
         printf "Set commit signing in all repos by default\n"
         git config --global commit.gpgsign true
 
-        echo "**************************\n"
+        echo "**************************"
         printf "WARNING:\n"
-        printf "YOU STILL NEED TO ADD YOUR PUBLIC KEY BLOCK TO YOUR GITHUB ACCOUNT BEFORE SIGNING COMMITS!\n"
+        printf "REMEMBER TO ADD YOUR PUBLIC KEY BLOCK TO YOUR GITHUB ACCOUNT BEFORE SIGNING COMMITS!\n"
         printf "Add the contents of ~/public-key.txt to your GPG keys in your GitHub account configurations\n"
     fi
 fi
 
 # Ask if user wants GitHub Desktop installed
-echo "**************************\n"
+echo "**************************"
 echo "Do you wish to install GitHub Desktop? (an option if you don't like the command line)  y / n: "
 read WANTS_GITHUB_DESKTOP
 
 if [[ $WANTS_GITHUB_DESKTOP == "y" ]]; then
     # Install GitHub Desktop
-    echo "**************************\n"
+    echo "**************************"
     printf "Installing GitHub Desktop\n"
     brew install github
     printf "Nice! You now have GitHub Desktop installed. Now, go ahead and open it to make sure your email address there, under Preferences > Account, is the same as your GitHub email account!"
@@ -144,8 +141,8 @@ if [[ $WANTS_GITHUB_DESKTOP == "y" ]]; then
 fi
 
 # Ask which editor the user wants installed
-echo "**************************\n"
-echo "Which text editor would you like installed?\n
+echo "**************************"
+printf "Which text editor would you like installed?\n
         1. VS Code -- great for code, text, and markdown\n
         2. Typora -- great for markdown\n
         3. Atom -- in-between vs code and typora\n
@@ -154,23 +151,25 @@ echo "Which text editor would you like installed?\n
 read TEXT_EDITOR
 
 if [[ $TEXT_EDITOR == "1" ]]; then
-    echo "**************************\n"
+    echo "**************************"
     printf "Installing VS Code\n"
     brew install visual-studio-code
 fi
 
 if [[ $TEXT_EDITOR == "2" ]]; then
-    echo "**************************\n"
+    echo "**************************"
     printf "Installing Typora\n"
     brew install typora
+    echo "alias typora='open -a typora'"
 fi
 
 if [[ $TEXT_EDITOR == "3" ]]; then
-    echo "**************************\n"
+    echo "**************************"
     printf "Installing Atom\n"
     brew install atom
 fi
 
-echo "**************************\n"
-echo "Cleaning up...\n"
+echo "**************************"
+echo "Cleaning up..."
 brew cleanup
+source ./zshrc
