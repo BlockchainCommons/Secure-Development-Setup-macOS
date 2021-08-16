@@ -17,27 +17,26 @@
 set -e
 
 # OSX-only stuff. Abort if not OSX.
-if [ "$(uname -s)" != "Darwin" ]
-then
+if [[ "$(uname -s)" != "Darwin" ]]; then
   printf "This script is only for OSX!\n"
   exit 1
 fi
 
 # Do not run script as root
-[ "$USER" = "root" ] && abort "Run this script as yourself, not root."
+[[ "$USER" = "root" ]] && abort "Run this script as yourself, not root."
 groups | grep $Q -E "\b(admin)\b" || abort "Add $USER to the admin group."
 
 # Ask for git credentials
 echo "**************************\n"
 echo "Make sure you have already created your GitHub account online and verified your email!"
-echo "What's your GitHub account name? "
+echo "What's your GitHub username? "
 read GITHUB_NAME
 echo "What's your GitHub account email? "
 read GITHUB_EMAIL
 
 
 # Install and setup Git
-if [ $(command -v git) == "" ]; then
+if [[ $(command -v git) == "" ]]; then
     echo "**************************\n"
     printf "Downloading and installing Git\n"
     brew install git
@@ -52,7 +51,7 @@ if [ $(command -v git) == "" ]; then
 fi
 
 # Install and setup gh
-if [ $(command -v gh) == "" ]; then
+if [[ $(command -v gh) == "" ]]; then
     echo "**************************\n"
     printf "Downloading and installing GitHub CLI\n"
     brew install gh
@@ -72,9 +71,9 @@ echo "**************************\n"
 echo "Do you wish to have new GPG keys created for you and have them linked to your GitHub account? y / n: "
 read WANTS_GPG
 
-if [ $WANTS_GPG == "y" ]; then
+if [[ $WANTS_GPG == "y" ]]; then
     # Install and setup GPG with GitHub
-    if [ $(command -v gpg) == "" ]; then
+    if [[ $(command -v gpg) == "" ]]; then
         echo "**************************\n"
         printf "Downloading and installing GPG.\n"
         brew install gnupg pinentry-mac
@@ -104,7 +103,7 @@ if [ $WANTS_GPG == "y" ]; then
 
         echo "**************************\n"
         printf "Telling git about your signing key locally\n"
-        # TODO: grab KEY_ID from gpg --list-secret-keys with awk
+        KEY_ID=$(gpg --list-secret-keys --keyid-format=long | grep sec | awk '{print $(NF-2)}' | sed 's/^[[^\//]]*\//\//' | cut -c 2-)
         git config --global user.signingkey $KEY_ID
 
         echo "**************************\n"
@@ -118,7 +117,7 @@ echo "**************************\n"
 echo "Do you wish to install GitHub Desktop? (an option if you don't like the command line)  y / n: "
 read WANTS_GITHUB_DESKTOP
 
-if [ $WANTS_GITHUB_DESKTOP == "y" ]; then
+if [[ $WANTS_GITHUB_DESKTOP == "y" ]]; then
     # Install GitHub Desktop
     echo "**************************\n"
     printf "Installing GitHub Desktop\n"
@@ -134,22 +133,22 @@ echo "Which text editor would you like installed?\n
         2. Typora -- great for markdown\n
         3. Atom -- in-between vs code and typora\n
         -------------------------------------------\n
-        [1, 2 or 3]: "
+        [ Type 1, 2 or 3 ]: "
 read TEXT_EDITOR
 
-if [ $TEXT_EDITOR == "1" ]; then
+if [[ $TEXT_EDITOR == "1" ]]; then
     echo "**************************\n"
     printf "Installing VS Code\n"
     brew install visual-studio-code
 fi
 
-if [ $TEXT_EDITOR == "2" ]; then
+if [[ $TEXT_EDITOR == "2" ]]; then
     echo "**************************\n"
     printf "Installing Typora\n"
     brew install typora
 fi
 
-if [ $TEXT_EDITOR == "3" ]; then
+if [[ $TEXT_EDITOR == "3" ]]; then
     echo "**************************\n"
     printf "Installing Atom\n"
     brew install atom
