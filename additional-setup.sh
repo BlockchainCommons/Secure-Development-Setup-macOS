@@ -68,7 +68,7 @@ if [[ $(command -v gh) == "" ]]; then
 fi
 
 echo "**************************\n"
-echo "Do you wish to have new GPG keys created for you and have them linked to your GitHub account? y / n: "
+printf "Do you wish to have new GPG keys created for you and configured for usage with Git? y / n: "
 read WANTS_GPG
 
 if [[ $WANTS_GPG == "y" ]]; then
@@ -77,6 +77,18 @@ if [[ $WANTS_GPG == "y" ]]; then
         echo "**************************\n"
         printf "Downloading and installing GPG.\n"
         brew install gnupg pinentry-mac
+        # Configure pinentry-mac
+        echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
+        #killall gpg-agent
+        echo "default-cache-ttl 600" >> ~/.gnupg/gpg-agent.conf
+        echo "max-cache-ttl 7200" >> ~/.gnupg/gpg-agent.conf
+        # Configure gpg.conf https://help.riseup.net/en/security/message-security/openpgp/best-practices
+        echo "keyid-format long" >> ~/.gnupg/gpg.conf
+        echo "use-agent" >> ~/.gnupg/gpg.conf
+        echo "auto-key-retrieve" >> ~/.gnupg/gpg.conf
+        echo "no-emit-version" >> ~/.gnupg/gpg.conf
+        echo "no-comments" >> ~/.gnupg/gpg.conf
+        if [[ -r ~/.zshrc ]]; then echo 'export GPG_TTY=$(tty)' >> ~/.zshrc; else echo 'export GPG_TTY=$(tty)' >> ~/.zprofile; fi
         echo "**************************\n"
         printf "FOLLOW THE STEPS BELOW TO CREATE & CONFIGURE GPG:\n"
         printf "This will be interactive. You can press 'return' / 'enter' to accept the defaults on the first two steps.\n"
@@ -84,12 +96,17 @@ if [[ $WANTS_GPG == "y" ]]; then
         printf "When asked your email address, provide the one you use with GitHub!\n"
         printf "For your passphrase, grab a dice and refer to: https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt \n"
         printf "Rolling the dice 5 times will give you one word -- you need 6 words so do that 6 times!\n"
-        printf "Type in your new passphrase afterwards and make sure you don't forget it! Create a written backup on a secure location if needed!"
+        printf "Type in your new passphrase afterwards and make sure you don't forget it! Create a written backup on a secure location if needed!\n"
         gpg --full-generate-key
+
+        # Grab KEY_ID for usage later
+        KEY_ID=$(gpg --list-secret-keys --keyid-format=long | grep sec | awk '{print $(NF-4)}' | sed 's/^[^\//]*\//\//' | cut -c 2-)
 
         echo "**************************\n"
         printf "Creating a revocation certificate\n"
-        # TODO: create folder first
+        if [[ $(cd; ls | grep gnupg) == "" ]]; then
+            mkdir ~/gnupg; mkdir ~/gnupg/revocable
+        fi
         gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke $GITHUB_EMAIL
 
         echo "**************************\n"
@@ -98,17 +115,17 @@ if [[ $WANTS_GPG == "y" ]]; then
         printf "IMPORTANT: Add the contents of ~/public-key.txt to your GitHub account > Settings > SSH and GPG keys > New GPG key\n\n"
 
         echo "**************************\n"
-        printf "Telling GPG to always use long key formats\n"
-        echo "keyid-format long" >> ~/.gnupg/gpg.conf
-
-        echo "**************************\n"
         printf "Telling git about your signing key locally\n"
-        KEY_ID=$(gpg --list-secret-keys --keyid-format=long | grep sec | awk '{print $(NF-2)}' | sed 's/^[[^\//]]*\//\//' | cut -c 2-)
         git config --global user.signingkey $KEY_ID
 
         echo "**************************\n"
         printf "Set commit signing in all repos by default\n"
         git config --global commit.gpgsign true
+
+        echo "**************************\n"
+        printf "WARNING:\n"
+        printf "YOU STILL NEED TO ADD YOUR PUBLIC KEY BLOCK TO YOUR GITHUB ACCOUNT BEFORE SIGNING COMMITS!\n"
+        printf "Add the contents of ~/public-key.txt to your GPG keys in your GitHub account configurations\n"
     fi
 fi
 
