@@ -22,7 +22,7 @@
 
 ##  TODO:
 #   - [ x ] Finish first draft
-#   - [ ] Test first working solution
+#   - [ x ] Test first working solution
 #   - [ ] Refactor script (https://kfirlavi.herokuapp.com/blog/2012/11/14/defensive-bash-programming/)
 #   - [ ] Test refactored, final script
 
@@ -34,11 +34,115 @@
 # Exit script if any subsequent command fails
 set -e
 
+[[ "$1" = "--debug" || -o xtrace ]] && SCRIPT_DEBUG="1"
+SCRIPT_SUCCESS=""
+
 # OSX-only stuff. Abort if not OSX.
 if [[ "$(uname -s)" != "Darwin" ]]; then
   printf "This script is only for OSX!"
   exit 1
 fi
+
+sudo_askpass() {
+  if [ -n "$SUDO_ASKPASS" ]; then
+    sudo --askpass "$@"
+  else
+    sudo "$@"
+  fi
+}
+
+cleanup() {
+  set +e
+  sudo_askpass rm -rf "$CLT_PLACEHOLDER" "$SUDO_ASKPASS" "$SUDO_ASKPASS_DIR"
+  sudo --reset-timestamp
+  if [ -z "$SCRIPT_SUCCESS" ]; then
+    if [ -n "$SCRIPT_STEP" ]; then
+      echo "!!! $SCRIPT_STEP FAILED" >&2
+    else
+      echo "!!! FAILED" >&2
+    fi
+    if [ -z "$SCRIPT_DEBUG" ]; then
+      echo "!!! Run '$0 --debug' for debugging output." >&2
+      # echo "!!! If you're stuck: file an issue with debugging output at:" >&2
+      echo "!!!   $SCRIPT_ISSUES_URL" >&2
+    fi
+  fi
+}
+
+trap "cleanup" EXIT
+
+if [ -n "$SCRIPT_DEBUG" ]; then
+  set -x
+else
+  SCRIPT_QUIET_FLAG="-q"
+  Q="$SCRIPT_QUIET_FLAG"
+fi
+
+STDIN_FILE_DESCRIPTOR="0"
+[ -t "$STDIN_FILE_DESCRIPTOR" ] && SCRIPT_INTERACTIVE="1"
+
+# We want to always prompt for sudo password at least once rather than doing
+# root stuff unexpectedly.
+sudo --reset-timestamp
+
+# functions for turning off debug for use when handling the user password
+clear_debug() {
+  set +x
+}
+
+reset_debug() {
+  if [ -n "$SCRIPT_DEBUG" ]; then
+    set -x
+  fi
+}
+
+# Initialise (or reinitialise) sudo to save unhelpful prompts later.
+sudo_init() {
+  if [ -z "$SCRIPT_INTERACTIVE" ]; then
+    return
+  fi
+
+  local SUDO_PASSWORD SUDO_PASSWORD_SCRIPT
+
+  if ! sudo --validate --non-interactive &>/dev/null; then
+    while true; do
+      read -rsp "--> Enter your password (for sudo access):" SUDO_PASSWORD
+      echo
+      if sudo --validate --stdin 2>/dev/null <<<"$SUDO_PASSWORD"; then
+        break
+      fi
+
+      unset SUDO_PASSWORD
+      echo "!!! Wrong password!" >&2
+    done
+
+    clear_debug
+    SUDO_PASSWORD_SCRIPT="$(cat <<BASH
+#!/bin/bash
+echo "$SUDO_PASSWORD"
+BASH
+)"
+    unset SUDO_PASSWORD
+    SUDO_ASKPASS_DIR="$(mktemp -d)"
+    SUDO_ASKPASS="$(mktemp "$SUDO_ASKPASS_DIR"/strap-askpass-XXXXXXXX)"
+    chmod 700 "$SUDO_ASKPASS_DIR" "$SUDO_ASKPASS"
+    bash -c "cat > '$SUDO_ASKPASS'" <<<"$SUDO_PASSWORD_SCRIPT"
+    unset SUDO_PASSWORD_SCRIPT
+    reset_debug
+
+    export SUDO_ASKPASS
+  fi
+}
+
+sudo_refresh() {
+  clear_debug
+  if [ -n "$SUDO_ASKPASS" ]; then
+    sudo --askpass --validate
+  else
+    sudo_init
+  fi
+  reset_debug
+}
 
 abort() { SCRIPT_STEP="";   echo "!!! $*" >&2; exit 1; }
 log()   { SCRIPT_STEP="$*"; sudo_refresh; echo "--> $*"; }
@@ -49,7 +153,7 @@ escape() {
 }
 
 # Do not run script as root
-[[ "$USER" = "root" ]] && abort "Run this script as yourself, not root."
+[ "$USER" = "root" ] && abort "Run this script as yourself, not root."
 groups | grep $Q -E "\b(admin)\b" || abort "Add $USER to the admin group."
 
 # Prevent sleeping during script execution, as long as the machine is on AC power
@@ -63,40 +167,37 @@ read GITHUB_NAME
 logn "What's your GitHub account email? "
 read GITHUB_EMAIL
 
-
 # Install and setup Git
-if [[ $(command -v git) == "" ]]; then
-    log "**************************"
-    log "Downloading and installing Git"
-    brew install git
-    log "Configuring Git"
-    git config --global user.name "$GITHUB_NAME"
-    git config --global user.email $GITHUB_EMAIL
+log "**************************"
+log "Downloading and installing Git"
+brew install git
+logk
+log "Configuring Git"
+git config --global user.name "$GITHUB_NAME"
+git config --global user.email $GITHUB_EMAIL
 
-    # Squelch git 2.x warning message when pushing
-    if ! git config push.default >/dev/null; then
-        git config --global push.default simple
-    fi
-    logk
+# Squelch git 2.x warning message when pushing
+if ! git config push.default >/dev/null; then
+    git config --global push.default simple
 fi
+logk
 
 # Install and setup gh
-if [[ $(command -v gh) == "" ]]; then
-    log "**************************"
-    log "Downloading and installing GitHub CLI"
-    brew install gh
-    log "**************************"
-    logn "FOLLOW THE STEPS BELOW TO CONFIGURE GITHUB CLI:"
-    log "This will be interactive. Here's what you need to select and/or type through the configuration process:"
-    log "1. Select GitHub.com if you're setting up a personal account."
-    log "2. Select your preferred authentication method. Selecting SSH will help you create SSH keys for usage with GitHub. You can then select 'upload your SSH public key to your GitHub account.'"
-    log "3. Select 'Paste an authentication token.' You will need to head over to your tokens section on GitHub at: https://github.com/settings/tokens "
-    log "3a. Click 'Generate new token' and give it a descriptive name, for instance 'github cli' "
-    log "3b. Allow the following 3 permissions by checking their individual boxes: repo, read:org, admin:public_key "
-    log "3c. Hit create and COPY THE TOKEN! You will need to paste it into the terminal when prompted for. "
-    gh auth login
-    logk
-fi
+log "**************************"
+log "Downloading and installing GitHub CLI"
+brew install gh
+logk
+log "**************************"
+logn "FOLLOW THE STEPS BELOW TO CONFIGURE GITHUB CLI:"
+log "This will be interactive. Here's what you need to select and/or type through the configuration process:"
+log "1. Select GitHub.com if you're setting up a personal account."
+log "2. Select your preferred authentication method. Selecting SSH will help you create SSH keys for usage with GitHub. You can then select 'upload your SSH public key to your GitHub account.'"
+log "3. Select 'Paste an authentication token.' You will need to head over to your tokens section on GitHub at: https://github.com/settings/tokens "
+log "3a. Click 'Generate new token' and give it a descriptive name, for instance 'github cli' "
+log "3b. Allow the following 3 permissions by checking their individual boxes: repo, read:org, admin:public_key "
+log "3c. Hit create and COPY THE TOKEN! You will need to paste it into the terminal when prompted for. "
+gh auth login
+logk
 
 log "**************************"
 logn "Do you wish to have new GPG keys created for you and configured for usage with Git? y / n: "
@@ -104,8 +205,6 @@ read WANTS_GPG
 
 if [[ $WANTS_GPG == "y" ]]; then
     # Install and setup GPG with GitHub
-    if [[ $(command -v gpg) == "" ]]; then
-        
         log "**************************"
         log "Downloading and installing GPG and pinentry-mac."
         brew install gnupg pinentry-mac
@@ -135,7 +234,7 @@ if [[ $WANTS_GPG == "y" ]]; then
         KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')
 
         log "**************************"
-        printf "Creating a revocation certificate"
+        logn "Creating a revocation certificate"
         if [[ $(cd; ls | grep gnupg) == "" ]]; then # create directory
             mkdir ~/gnupg; mkdir ~/gnupg/revocable
         fi
@@ -143,40 +242,40 @@ if [[ $WANTS_GPG == "y" ]]; then
         logk
 
         log "**************************"
-        printf "Exporting your public key block to ~/public-key.txt "
+        logn "Exporting your public key block to ~/public-key.txt "
         gpg --armor --export $KEY_ID > ~/public-key.txt
         logk
-        printf "IMPORTANT: Add the contents of ~/public-key.txt to your GitHub account > Settings > SSH and GPG keys > New GPG key\n"
+        log "IMPORTANT: Add the contents of ~/public-key.txt to your GitHub account > Settings > SSH and GPG keys > New GPG key\n"
 
         log "**************************"
-        printf "Telling git about your signing key locally"
+        logn "Telling git about your signing key locally"
         git config --global user.signingkey $KEY_ID
         logk
 
         log "**************************"
-        printf "Set commit signing in all repos by default"
+        logn "Set commit signing in all repos by default"
         git config --global commit.gpgsign true
         logk
 
         log "**************************"
-        printf "WARNING:"
-        printf "REMEMBER TO ADD YOUR PUBLIC KEY BLOCK TO YOUR GITHUB ACCOUNT BEFORE SIGNING COMMITS!"
-        printf "Add the contents of ~/public-key.txt to your GPG keys in your GitHub account configurations"
+        log "WARNING:"
+        log "REMEMBER TO ADD YOUR PUBLIC KEY BLOCK TO YOUR GITHUB ACCOUNT BEFORE SIGNING COMMITS!"
+        log "Add the contents of ~/public-key.txt to your GPG keys in your GitHub account configurations"
     fi
 fi
 
 # Ask if user wants GitHub Desktop installed
 log "**************************"
-printf "Do you wish to install GitHub Desktop? (an option if you don't like the command line)  y / n: "
+logn "Do you wish to install GitHub Desktop? (an option if you don't like the command line)  y / n: "
 read WANTS_GITHUB_DESKTOP
 
 if [[ $WANTS_GITHUB_DESKTOP == "y" ]]; then
     # Install GitHub Desktop
     log "**************************"
-    printf "Installing GitHub Desktop"
+    logn "Installing GitHub Desktop"
     brew install github
-    printf "Nice! You now have GitHub Desktop installed. Now, go ahead and open it to make sure your email address there, under Preferences > Account, is the same as your GitHub email account!"
-    printf "If the email addresses match, congrats! You can now contribute to open source with signed commits using only GitHub Desktop."
+    log "Nice! You now have GitHub Desktop installed. Now, go ahead and open it to make sure your email address there, under Preferences > Account, is the same as your GitHub email account!"
+    log "If the email addresses match, congrats! You can now contribute to open source with signed commits using only GitHub Desktop."
     logk
 fi
 
@@ -214,4 +313,9 @@ fi
 log "**************************"
 log "Cleaning up..."
 brew cleanup
-source ./zshrc
+source ~/.zshrc
+
+SCRIPT_SUCCESS="1"
+log "Enjoy your new development machine!"
+
+exit
