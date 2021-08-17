@@ -316,7 +316,7 @@ fi
 log "**************************"
 log "Cleaning up..."
 brew cleanup
-source ~/.zshrc
+#source ~/.zshrc
 
 SCRIPT_SUCCESS="1"
 log "Enjoy your new development machine!"
