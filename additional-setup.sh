@@ -168,100 +168,103 @@ logn "What's your GitHub account email? "
 read GITHUB_EMAIL
 
 # Install and setup Git
-log "**************************"
-log "Downloading and installing Git"
-brew install git
-logk
-log "Configuring Git"
-git config --global user.name "$GITHUB_NAME"
-git config --global user.email $GITHUB_EMAIL
+if [[ $(command -v git) == "" ]]; then
+  log "**************************"
+  log "Downloading and installing Git"
+  brew install git
+  
+  log "Configuring Git"
+  git config --global user.name "$GITHUB_NAME"
+  git config --global user.email $GITHUB_EMAIL
 
-# Squelch git 2.x warning message when pushing
-if ! git config push.default >/dev/null; then
+  # Squelch git 2.x warning message when pushing
+  if ! git config push.default >/dev/null; then
     git config --global push.default simple
+  fi
+  
+  logk
 fi
-logk
 
 # Install and setup gh
-log "**************************"
-log "Downloading and installing GitHub CLI"
-brew install gh
-logk
-log "**************************"
-logn "FOLLOW THE STEPS BELOW TO CONFIGURE GITHUB CLI:"
-log "This will be interactive. Here's what you need to select and/or type through the configuration process:"
-log "1. Select GitHub.com if you're setting up a personal account."
-log "2. Select your preferred authentication method. Selecting SSH will help you create SSH keys for usage with GitHub. You can then select 'upload your SSH public key to your GitHub account.'"
-log "3. Select 'Paste an authentication token.' You will need to head over to your tokens section on GitHub at: https://github.com/settings/tokens "
-log "3a. Click 'Generate new token' and give it a descriptive name, for instance 'github cli' "
-log "3b. Allow the following 3 permissions by checking their individual boxes: repo, read:org, admin:public_key "
-log "3c. Hit create and COPY THE TOKEN! You will need to paste it into the terminal when prompted for. "
-gh auth login
-logk
+if [[ $(command -v gh) == "" ]]; then
+  log "**************************"
+  log "No gh installed!"
+  log "Downloading and installing GitHub CLI"
+  brew install gh
+  log "Installed gh."
+  logk
+fi
+
+# Log into gh
+if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
+  log "**************************"
+  log "You are not logged into gh!"
+  log "Authenticate gh with GitHub using the Web and set SSH as default."
+  gh auth login
+  log "Logged into GitHub."
+  logk
+fi
+
+# Install GPG and pinentry-mac
+if [[ $(command -v gpg) == "" ]]; then
+  log "**************************"
+  log "No GPG Installed!"
+  log "Downloading and installing GPG and pinentry-mac."
+  brew install gnupg pinentry-mac # now gnupg, gnupg2, gpg, and gpg2 are all the same for brew
+  
+  # Configure pinentry-mac
+  echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
+  #echo 'export GPG_TTY=$(tty)' >> ~/.zshrc
+  
+  # Tell GnuPG to always use the longer, more secure 16-character key IDs
+  echo "keyid-format long" >> ~/.gnupg/gpg.conf
+  
+  logk
+fi
 
 log "**************************"
-logn "Do you wish to have new GPG keys created for you and configured for usage with Git? y / n: "
+logn "Do you want new GPG keys for usage with Git? [y / n]: "
 read WANTS_GPG
 
 if [[ $WANTS_GPG == "y" ]]; then
-    # Install and setup GPG with GitHub
-        log "**************************"
-        log "Downloading and installing GPG and pinentry-mac."
-        brew install gnupg pinentry-mac
-        
-        # Configure pinentry-mac
-        echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
-        echo 'export GPG_TTY=$(tty)' >> ~/.zshrc
-        
-        # Tell GnuPG to always use the longer, more secure 16-character key IDs
-        echo "keyid-format long" >> ~/.gnupg/gpg.conf
+  
+  log "**************************"
+  logn "FOLLOW THE STEPS BELOW TO CREATE & CONFIGURE GPG:"
+  log "Use ECC (sign and encrypt) Curve 25519 and have your key expire in 1y"
+  log "Passphrase - roll a dice 5 times and match it against https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt"
+  log "Do that 6 times to have a 6-word passphrase"
+  
+  gpg --full-generate-key
 
-        logk
-        
-        log "**************************"
-        logn "FOLLOW THE STEPS BELOW TO CREATE & CONFIGURE GPG:"
-        log "This will be interactive. You can press 'return' / 'enter' to accept the defaults on the first two steps."
-        log "On the third step, select make the key expire in one year by typing 1y"
-        log "When asked your email address, provide the one you use with GitHub!"
-        log "For your passphrase, grab a dice and refer to: https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt "
-        log "Rolling the dice 5 times will give you one word -- you need 6 words so do that 6 times!"
-        log "Type in your new passphrase afterwards and make sure you don't forget it! Create a written backup on a secure location if needed!"
-        gpg --full-generate-key
+  logk
 
-        logk
+  # Grab KEY_ID for later use
+  KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')
 
-        # Grab KEY_ID for later use
-        KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')
+  log "**************************"
+  logn "Creating a revocation certificate"
+  if [[ $(cd; ls | grep gnupg) == "" ]]; then # create directory
+    mkdir ~/gnupg; mkdir ~/gnupg/revocable
+  fi
+  gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke $KEY_ID
+  logk
 
-        log "**************************"
-        logn "Creating a revocation certificate"
-        if [[ $(cd; ls | grep gnupg) == "" ]]; then # create directory
-            mkdir ~/gnupg; mkdir ~/gnupg/revocable
-        fi
-        gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke $KEY_ID
-        logk
+  log "**************************"
+  logn "Exporting your public key block to ~/public-key.txt "
+  gpg --armor --export $KEY_ID > ~/public-key.txt
+  logk
+  log "IMPORTANT: Add the contents of ~/public-key.txt to https://github.com/settings/gpg/new "
 
-        log "**************************"
-        logn "Exporting your public key block to ~/public-key.txt "
-        gpg --armor --export $KEY_ID > ~/public-key.txt
-        logk
-        log "IMPORTANT: Add the contents of ~/public-key.txt to your GitHub account > Settings > SSH and GPG keys > New GPG key\n"
+  log "**************************"
+  logn "Telling git about your signing key locally"
+  git config --global user.signingkey $KEY_ID
+  logk
 
-        log "**************************"
-        logn "Telling git about your signing key locally"
-        git config --global user.signingkey $KEY_ID
-        logk
+  log "**************************"
+  logn "Set commit signing in all repos by default"
+  git config --global commit.gpgsign true
+  logk
 
-        log "**************************"
-        logn "Set commit signing in all repos by default"
-        git config --global commit.gpgsign true
-        logk
-
-        log "**************************"
-        log "WARNING:"
-        log "REMEMBER TO ADD YOUR PUBLIC KEY BLOCK TO YOUR GITHUB ACCOUNT BEFORE SIGNING COMMITS!"
-        log "Add the contents of ~/public-key.txt to your GPG keys in your GitHub account configurations"
-    fi
 fi
 
 # Ask if user wants GitHub Desktop installed
@@ -270,19 +273,19 @@ logn "Do you wish to install GitHub Desktop? (an option if you don't like the co
 read WANTS_GITHUB_DESKTOP
 
 if [[ $WANTS_GITHUB_DESKTOP == "y" ]]; then
-    # Install GitHub Desktop
-    log "**************************"
-    logn "Installing GitHub Desktop"
-    brew install github
-    log "Nice! You now have GitHub Desktop installed. Now, go ahead and open it to make sure your email address there, under Preferences > Account, is the same as your GitHub email account!"
-    log "If the email addresses match, congrats! You can now contribute to open source with signed commits using only GitHub Desktop."
-    logk
+  # Install GitHub Desktop
+  log "**************************"
+  logn "Installing GitHub Desktop"
+  brew install github
+  log "Nice! You now have GitHub Desktop installed. Now, go ahead and open it to make sure your email address there, under Preferences > Account, is the same as your GitHub email account!"
+  log "If the email addresses match, congrats! You can now contribute to open source with signed commits using only GitHub Desktop."
+  logk
 fi
 
 # Ask which editor the user wants installed
 log "**************************"
 logn "Which text editor would you like installed?\n
-        1. VS Code -- great for code, text, and markdown\n
+        1. Visual Studio Code -- great for code, text, and markdown\n
         2. Typora -- great for markdown\n
         3. Atom -- in-between vs code and typora\n
         -------------------------------------------\n
@@ -290,24 +293,24 @@ logn "Which text editor would you like installed?\n
 read TEXT_EDITOR
 
 if [[ $TEXT_EDITOR == "1" ]]; then
-    log "**************************"
-    log "Installing VS Code"
-    brew install visual-studio-code
-    logk
+  log "**************************"
+  log "Installing VS-Code"
+  brew install visual-studio-code
+  logk
 fi
 
 if [[ $TEXT_EDITOR == "2" ]]; then
-    log "**************************"
-    log "Installing Typora"
-    brew install typora
-    echo 'alias typora="open -a typora"' >> ~/.zshrc
-    logk
+  log "**************************"
+  log "Installing Typora"
+  brew install typora
+  echo 'alias typora="open -a typora"' >> ~/.zshrc
+  logk
 fi
 
 if [[ $TEXT_EDITOR == "3" ]]; then
-    log "**************************"
-    log "Installing Atom"
-    brew install atom
+  log "**************************"
+  log "Installing Atom"
+  brew install atom
 fi
 
 log "**************************"
