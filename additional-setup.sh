@@ -315,6 +315,11 @@ else
     fi
 fi
 
+if [ -z "$KEY_ID" ]; then
+    # Grab KEY_ID for later use
+    KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')
+fi
+
 # Tell Git about signing key
 log "**************************"
 log "Configuring GPG commit signing..."
@@ -325,14 +330,16 @@ logk
 # Grab GPG key fingerprint from GPG public key
 #GPG_KEY_FINGERPRINT=`echo $GPG_PUBLIC_KEY 2>/dev/null | gpg --with-colons --import-options show-only --import --fingerprint 2>/dev/null | awk -F: '$1 == "fpr" {print $10}' | head -1`
 
+### TODO:
+#
 # Check if revocation certificate already exists
-log "**************************"
-logn "Creating a revocation certificate"
-if [[ $(cd; ls | grep gnupg) == "" ]]; then # create directory
-    mkdir ~/gnupg; mkdir ~/gnupg/revocable
-fi
-gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke $KEY_ID
-logk
+#log "**************************"
+#logn "Creating a revocation certificate"
+#if [[ $(cd; ls | grep gnupg) == "" ]]; then # create directory
+#    mkdir ~/gnupg; mkdir ~/gnupg/revocable
+#fi
+#gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke $KEY_ID
+#logk
 
 # Check if public key file already exists
 if [[ $(cat ~/public.key 2>/dev/null; echo $?) == "0" ]]; then # file already exists
