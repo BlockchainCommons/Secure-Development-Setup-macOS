@@ -320,26 +320,31 @@ if [ -z "$KEY_ID" ]; then
     KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')
 fi
 
-# Tell Git about signing key
-log "**************************"
-log "Configuring GPG commit signing..."
-git config --global user.signingkey $KEY_ID
-git config --global commit.gpgsign true
-logk
+# Check GPG config on Git
+if [[ $(git config user.signingkey) == "" ]]; then
+    # Tell Git about signing key
+    log "**************************"
+    log "No GPG keys found on Git."
+    log "Configuring GPG commit signing..."
+    git config --global user.signingkey $KEY_ID
+    git config --global commit.gpgsign true
+    logk
+fi
 
 # Grab GPG key fingerprint from GPG public key
-#GPG_KEY_FINGERPRINT=`echo $GPG_PUBLIC_KEY 2>/dev/null | gpg --with-colons --import-options show-only --import --fingerprint 2>/dev/null | awk -F: '$1 == "fpr" {print $10}' | head -1`
+GPG_KEY_FINGERPRINT=`echo $GPG_PUBLIC_KEY 2>/dev/null | gpg --with-colons --import-options show-only --import --fingerprint 2>/dev/null | awk -F: '$1 == "fpr" {print $10}' | head -1`
 
-### TODO:
-#
 # Check if revocation certificate already exists
-#log "**************************"
-#logn "Creating a revocation certificate"
-#if [[ $(cd; ls | grep gnupg) == "" ]]; then # create directory
-#    mkdir ~/gnupg; mkdir ~/gnupg/revocable
-#fi
-#gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke $KEY_ID
-#logk
+if [[ $(ls ~/.gnupg/openpgp-revocs.d/ | grep $GPG_KEY_FINGERPRINT) == "" ]] || [[ $(ls ~/gnupg/revocable) == "" ]]; then
+    log "**************************"
+    log "No revocation certificate found."
+    logn "Creating a revocation certificate..."
+    if [[ $(ls ~/ | grep gnupg) == "" ]]; then # create directory
+        mkdir ~/gnupg; mkdir ~/gnupg/revocable
+    fi
+    gpg --output ~/gnupg/revocable/$GPG_KEY_FINGERPRINT.rev --gen-revoke $KEY_ID
+    logk
+fi
 
 # Check if public key file already exists
 if [[ $(cat ~/public.key 2>/dev/null; echo $?) == "0" ]]; then # file already exists
@@ -362,7 +367,7 @@ if [[ $WANTS_GITHUB_DESKTOP == "y" ]]; then
     log "**************************"
     log "Installing GitHub Desktop..."
     brew install github
-    log "Select your main GitHub email when asked by GitHub Desktop."
+    log "Select your main GitHub email when asked by GitHub Desktop!"
     logk
 fi
 
@@ -382,7 +387,11 @@ if [[ $TEXT_EDITOR == "1" ]]; then
     log "**************************"
     log "Installing VS-Code"
     brew install visual-studio-code
-    git config --global core.editor code
+    if [[ $(git config core.editor) == "" ]]; then
+        log "No default editor set for git."
+        log "Setting VS-Code as default editor..."
+        git config --global core.editor code
+    fi
     logk
 fi
 
@@ -391,7 +400,11 @@ if [[ $TEXT_EDITOR == "2" ]]; then
     log "Installing Typora"
     brew install typora
     echo 'alias typora="open -a typora"' >> ~/.zshrc
-    git config --global core.editor typora
+    if [[ $(git config core.editor) == "" ]]; then
+        log "No default editor set for git."
+        log "Setting Typora as default editor..."
+        git config --global core.editor typora
+    fi
     logk
 fi
 
@@ -399,7 +412,12 @@ if [[ $TEXT_EDITOR == "3" ]]; then
     log "**************************"
     log "Installing Atom"
     brew install atom
-    git config --global core.editor atom
+    if [[ $(git config core.editor) == "" ]]; then
+        log "No default editor set for git."
+        log "Setting Atom as default editor..."
+        git config --global core.editor atom
+    fi
+    logk
 fi
 
 # Add public key to GitHub account
@@ -417,9 +435,10 @@ if [ -z "$GH_PUBLIC_KEY" ]; then
     if [[ $ADDED == "y" ]]; then
         # Check if the correct key was added
         log "Checking if the correct key was uploaded to GitHub..."
+        sleep 5s # wait a bit to make sure we get the most up to date info from github
         GH_PUBLIC_KEY_ADDED=$(curl https://github.com/$GH_USER.gpg 2>/dev/null)
         if [ -z "$GH_PUBLIC_KEY_ADDED" ]; then
-            abort "Unable to find $GPG_PUBLIC_KEY"
+            abort "Unable to find your key on GitHub!"
         else
             if [[ $GH_PUBLIC_KEY_ADDED == $GPG_PUBLIC_KEY ]]; then
                 logk
