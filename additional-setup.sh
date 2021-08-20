@@ -236,8 +236,10 @@ if [[ $(command -v gpg) == "" ]]; then
 fi
 
 # Check for existing key on GitHub
-GH_PUBLIC_KEY=$(curl https://github.com/$GH_USER.gpg 2>/dev/null)
-if [ -z "$GH_PUBLIC_KEY" ]; then
+GITHUB_PUBLIC_KEY=$(curl https://github.com/$GH_USER.gpg 2>/dev/null)
+#if [ -z "$GITHUB_PUBLIC_KEY" ]; then 
+# GitHub returns a PGP public key block saying "Note: This user hasn't uploaded any GPG keys."
+if ! [[ echo $GITHUB_PUBLIC_KEY | grep "This user hasn't" == "" ]]; then
     
     log "**************************"
     log "No GPG keys found on your GitHub account."
@@ -290,7 +292,7 @@ else
     log "GPG key found at https://github.com/$GH_USER.gpg"
     # Download key to ~/.gnupg
     log "Saving your public key to ~/public.key and importing it to ~/.gnupg"
-    echo $GH_PUBLIC_KEY > ~/public.key
+    echo $GITHUB_PUBLIC_KEY > ~/public.key
     gpg --import-options import-show --import ~/public.key
     
     # Ask for private key file path
@@ -429,7 +431,7 @@ if [[ $TEXT_EDITOR == "3" ]]; then
 fi
 
 # Add public key to GitHub account
-if [ -z "$GH_PUBLIC_KEY" ]; then
+if [ -z "$GITHUB_PUBLIC_KEY" ]; then
     log "FINAL STEP: Add your ~/public.key to your GitHub account:"
     log "Copying your public key..."
     echo $GPG_PUBLIC_KEY | pbcopy
@@ -444,11 +446,11 @@ if [ -z "$GH_PUBLIC_KEY" ]; then
         # Check if the correct key was added
         log "Checking if the correct key was uploaded to GitHub..."
         sleep 5s # wait a bit to make sure we get the most up to date info from github
-        GH_PUBLIC_KEY_ADDED=$(curl https://github.com/$GH_USER.gpg 2>/dev/null)
-        if [ -z "$GH_PUBLIC_KEY_ADDED" ]; then
+        GITHUB_PUBLIC_KEY_ADDED=$(curl https://github.com/$GH_USER.gpg 2>/dev/null)
+        if [ -z "$GITHUB_PUBLIC_KEY_ADDED" ]; then
             abort "Unable to find your key on GitHub!"
         else
-            if [[ $GH_PUBLIC_KEY_ADDED == $GPG_PUBLIC_KEY ]]; then
+            if [[ $GITHUB_PUBLIC_KEY_ADDED == $GPG_PUBLIC_KEY ]]; then
                 logk
             fi
         fi
