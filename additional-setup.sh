@@ -239,7 +239,7 @@ fi
 GITHUB_PUBLIC_KEY=$(curl https://github.com/$GH_USER.gpg 2>/dev/null)
 #if [ -z "$GITHUB_PUBLIC_KEY" ]; then 
 # GitHub returns a PGP public key block saying "Note: This user hasn't uploaded any GPG keys."
-if ! [[ echo $GITHUB_PUBLIC_KEY | grep "This user hasn't" == "" ]]; then
+if !([[ $(echo $GITHUB_PUBLIC_KEY | grep "This user hasn't") == "" ]]); then
     
     log "**************************"
     log "No GPG keys found on your GitHub account."
@@ -253,15 +253,14 @@ if ! [[ echo $GITHUB_PUBLIC_KEY | grep "This user hasn't" == "" ]]; then
         log "Type your name and GitHub email when prompted."
         log "Passphrase - roll a dice 5 times and match it against https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt"
         log "Do that 6 times to have a secure 6-word passphrase."
-        sleep 2s # give some time to read the above...
+
+        # GPG will timeout the passphrase prompt very quickly
+        read -p "Press Enter AFTER you have created a passphrase with the directives above: "
         
         # gpg --full-generate-key
         # Generate key using defaults instead - prompt only for uid and passphrase - will expire in 2y
         # Will also auto-generate a revocation certificate
         gpg --gen-key
-
-        # Grab KEY_ID for later use
-        KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')
 
         logk
     else
@@ -325,10 +324,8 @@ killall gpg-agent
 # Tell GnuPG to always use the longer, more secure 16-character key IDs
 echo "keyid-format long" >> ~/.gnupg/gpg.conf
 
-if [ -z "$KEY_ID" ]; then
-    # Grab KEY_ID for later use
-    KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')
-fi
+# Grab KEY_ID for later use
+KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')
 
 # Check GPG config on Git
 if [[ $(git config user.signingkey) == "" ]]; then
@@ -341,8 +338,21 @@ if [[ $(git config user.signingkey) == "" ]]; then
     logk
 fi
 
-# Grab GPG key fingerprint from GPG public key
-GPG_KEY_FINGERPRINT=`echo $GPG_PUBLIC_KEY 2>/dev/null | gpg --with-colons --import-options show-only --import --fingerprint 2>/dev/null | awk -F: '$1 == "fpr" {print $10}' | head -1`
+# Check if public key file already exists
+if [[ $(cat ~/public.key 2>/dev/null; echo $?) == "0" ]]; then # file already exists
+    logk
+else
+    log "**************************"
+    logn "Exporting your public key block to ~/public.key ..."
+    gpg --armor --export $KEY_ID > ~/public.key
+    logk
+fi
+
+# Create public key file
+gpg --armor --export $KEY_ID > ~/public.key
+
+# Get fingerprint
+GPG_KEY_FINGERPRINT=`gpg --with-colons --import-options show-only --import --fingerprint ~/public.key 2>/dev/null | awk -F: '$1 == "fpr" {print $10}' | head -1`
 
 # Check if revocation certificate already exists
 if [[ $(ls ~/.gnupg/openpgp-revocs.d/ | grep $GPG_KEY_FINGERPRINT) == "" || $(ls ~/gnupg/revocable) == "" ]]; then
@@ -353,17 +363,6 @@ if [[ $(ls ~/.gnupg/openpgp-revocs.d/ | grep $GPG_KEY_FINGERPRINT) == "" || $(ls
         mkdir ~/gnupg; mkdir ~/gnupg/revocable
     fi
     gpg --output ~/gnupg/revocable/$GPG_KEY_FINGERPRINT.rev --gen-revoke $KEY_ID
-    logk
-fi
-
-# Check if public key file already exists
-if [[ $(cat ~/public.key 2>/dev/null; echo $?) == "0" ]]; then # file already exists
-    logk
-else
-    log "**************************"
-    logn "Exporting your public key block to ~/public.key ..."
-    GPG_PUBLIC_KEY=$(gpg --armor --export $KEY_ID)
-    echo $GPG_PUBLIC_KEY > ~/public.key
     logk
 fi
 
@@ -431,34 +430,37 @@ if [[ $TEXT_EDITOR == "3" ]]; then
 fi
 
 # Add public key to GitHub account
-if [ -z "$GITHUB_PUBLIC_KEY" ]; then
-    log "FINAL STEP: Add your ~/public.key to your GitHub account:"
-    log "Copying your public key..."
-    echo $GPG_PUBLIC_KEY | pbcopy
-    log "It is copied. Select 'New GPG Key' on the browser and paste it."
+# if [ -z "$GITHUB_PUBLIC_KEY" ]; then
+if !([[ $(curl https://github.com/$GH_USER.gpg 2>/dev/null | grep "This user hasn't") == "" ]]); then
+
+    log "Add your ~/public.key to your GitHub account:"
+    log "Your public key block will be printed below..."
+    cat ~/public.key
+    log "Now COPY it. Select 'New GPG Key' on the browser and paste it."
     log "Opening https://github.com/settings/gpg/new on the browser..."
     sleep 2s
     open https://github.com/settings/gpg/new
 
-    logn "Type 'y' after you add your public key to GitHub: "
-    read ADDED
-    if [[ $ADDED == "y" ]]; then
-        # Check if the correct key was added
-        log "Checking if the correct key was uploaded to GitHub..."
-        sleep 5s # wait a bit to make sure we get the most up to date info from github
-        GITHUB_PUBLIC_KEY_ADDED=$(curl https://github.com/$GH_USER.gpg 2>/dev/null)
-        if [ -z "$GITHUB_PUBLIC_KEY_ADDED" ]; then
-            abort "Unable to find your key on GitHub!"
-        else
-            if [[ $GITHUB_PUBLIC_KEY_ADDED == $GPG_PUBLIC_KEY ]]; then
-                logk
-            fi
+    read -p "Press Enter after you've added your key on github.com: "
+    
+    # Check if the correct key was added
+    log "Checking if the correct key was uploaded to GitHub..."
+    sleep 5s # wait a bit to make sure we get the most up to date info from github
+    GITHUB_PUBLIC_KEY_ADDED=$(curl https://github.com/$GH_USER.gpg 2>/dev/null)
+    GPG_PUBLIC_KEY=$(cat ~/public.key)
+    
+    if !([[ $(curl https://github.com/$GH_USER.gpg 2>/dev/null | grep "This user hasn't") == "" ]]); then
+        abort "Unable to find your key on GitHub!"
+    else
+        if [[ $GITHUB_PUBLIC_KEY_ADDED == $GPG_PUBLIC_KEY ]]; then
+            logk
         fi
     fi
 fi
 
 log "Cleaning things up..."
 brew cleanup
+logk
 
 SCRIPT_SUCCESS="1"
 log "Enjoy your new development machine!"
