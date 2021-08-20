@@ -169,7 +169,7 @@ if [[ $(command -v git) == "" ]]; then
 fi
 
 # Setup Git
-if [[ $(git config user.name) == "" ]] && [[ $(git config user.email) == ""]]; then
+if [[ $(git config user.name) == "" && $(git config user.email) == "" ]]; then
     log "**************************"
     log "No git credentials configured!"
     logn "What's your GitHub username? "
@@ -217,6 +217,14 @@ else
     abort "Your credentials on git and gh do not match! Exiting..."
 fi
 
+# Check for zshrc file, create if not
+if [[ $(ls -a ~/ | grep .zshrc) == "" ]]; then
+    touch ~/.zshrc
+fi
+
+# Add path used for `brew` formulae
+echo 'export PATH="/usr/local/sbin:$PATH"' >> ~/.zshrc
+
 # Install GPG and pinentry-mac
 if [[ $(command -v gpg) == "" ]]; then
     log "**************************"
@@ -226,13 +234,6 @@ if [[ $(command -v gpg) == "" ]]; then
     brew install gnupg pinentry-mac
     logk
 fi
-
-# Use pinentry-mac https://github.com/Homebrew/homebrew-core/issues/14737#issuecomment-309547412
-echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
-killall gpg-agent
-
-# Tell GnuPG to always use the longer, more secure 16-character key IDs
-echo "keyid-format long" >> ~/.gnupg/gpg.conf
 
 # Check for existing key on GitHub
 GH_PUBLIC_KEY=$(curl https://github.com/$GH_USER.gpg 2>/dev/null)
@@ -315,6 +316,13 @@ else
     fi
 fi
 
+# Use pinentry-mac https://github.com/Homebrew/homebrew-core/issues/14737#issuecomment-309547412
+echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
+killall gpg-agent
+
+# Tell GnuPG to always use the longer, more secure 16-character key IDs
+echo "keyid-format long" >> ~/.gnupg/gpg.conf
+
 if [ -z "$KEY_ID" ]; then
     # Grab KEY_ID for later use
     KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')
@@ -335,7 +343,7 @@ fi
 GPG_KEY_FINGERPRINT=`echo $GPG_PUBLIC_KEY 2>/dev/null | gpg --with-colons --import-options show-only --import --fingerprint 2>/dev/null | awk -F: '$1 == "fpr" {print $10}' | head -1`
 
 # Check if revocation certificate already exists
-if [[ $(ls ~/.gnupg/openpgp-revocs.d/ | grep $GPG_KEY_FINGERPRINT) == "" ]] || [[ $(ls ~/gnupg/revocable) == "" ]]; then
+if [[ $(ls ~/.gnupg/openpgp-revocs.d/ | grep $GPG_KEY_FINGERPRINT) == "" || $(ls ~/gnupg/revocable) == "" ]]; then
     log "**************************"
     log "No revocation certificate found."
     logn "Creating a revocation certificate..."
