@@ -208,6 +208,9 @@ http://git-scm.com
 /usr/local/Cellar/git/2.3.5 (1363 files, 31M) *
 Not installed
 From: https://github.com/Homebrew/homebrew/blob/master/Library/Formula/git.rb
+```
+
+```
 $ brew install git
 ==> Downloading https://homebrew.bintray.com/bottles/git-2.3.5.yosemite.bottle.t
 ######################################################################## 100.0%
@@ -226,9 +229,25 @@ zsh completion has been installed to:
   /usr/local/share/zsh/site-functions
 ==> Summary
 🍺  /usr/local/Cellar/git/2.3.5: 1363 files, 31M
+```
+
+```
 $ git --version
 git version 2.3.5
 $
+```
+
+Now, configure your local git credentials (use your GitHub account actual name and email information):
+
+```
+$ git config --global user.name "Your Name"
+$ git config --global user.email your.github@email.com
+```
+
+Squelch git 2.x warning message when pushing:
+
+```
+git config --global push.default simple
 ```
 
 Installing GitHub CLI
