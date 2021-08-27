@@ -1,16 +1,31 @@
 # Secure Development Setup for macOS
 
-### ***by Christopher Allen, Shannon Appelcline, and Namcios***
+### ***by [Christopher Allen]((https://github.com/ChristopherA)), [Shannon Appelcline](https://github.com/shannona), and [Namcios](https://github.com/namcios)***
 
 This repo offers documentation and scripts for setting up git, github, gpg and ssh on a new Mac computer.
 
 ## Additional Information
 
-At this time these documents and scripts are focused on installation of a secure developer tool environment for a macOS Big Sur 11.0 computer.
+At this time these documents and scripts are focused on installation of a secure developer tool environment for a macOS Big Sur 11.5 on Intel Mac computer.
 
 In particular, the scripts in this repo are being tested using a VMware Fusion instance to allow for use of snapshots and restoration, and thus they have not been tested against a real Macintosh hardware at this time. They also are intended for use on a NEW Macintosh, and may destroy or compromise your development environment on an existing Macintosh.
 
-> NOTE: Compatibility with M1 Macs is not currently ensured.
+>  NOTE: Compatibility with M1 Macs (Apple Silicon) is not currently ensured.
+
+### Index
+
+The documentation provided in this repo explain what you should know to work on the command line and what you should install on your Mac to get started developing.
+
+The scripts automate what is suggested in the documentation, however, it might help to have the documentation open since some of the steps will be interactive. Having the docs open while you run the scripts will allow you to choose the best options when prompted for inputs. However, the scripts also print some hints to the console as to what you should select and when.
+
+- Documentation
+  - [Mac Command Line 101](Mac\ Command\ Line\ 101/) provides an introductory guide for learning about the command line interface on a Mac, assuming no previous knowledge.
+    - [Part 1 - Basics](Mac\ Command\ Line\ 101/part1-basics.md) goes over the basic concepts of working with the command line and get familiarized with it.
+    - [Part 2 - Prepare](Mac\ Command\ Line\ 101/part2-prepare.md) talks about the necessary tools you'd need to install to set up a development environment in your Mac, as well as some tools you might want if you don't intend to use the command line for everyday tasks.
+  - [GPG with GitHub](gpg-with-github.md) walks through the creation process of a new GPG keypair and the steps necessary to configure GitHub to use your new GPG keypair for commit signing.
+- Scripts
+  - [initial-macos-developer-setup.sh](initial-macos-developer-setup.sh) installs core development dependencies on your Mac, including updates, Xcode Command Line Tools and brew, tapping essential sources, and checking for necessary updates.
+  - [additional-setup.sh](additional-setup.sh) installs extra tools for your development needs if they're not already installed, including git, GitHub CLI, GnuPG (as well as create new GPG keys, configure gpg and pinentry-mac, create a revocation certificate, configure git to allow GPG signed commits), GitHub Desktop, and a text editor/code IDE of your choice.
 
 ## Status - EARLY DRAFT
 
@@ -102,9 +117,10 @@ If your company requires support to use our projects, please feel free to contac
 
 The following people directly contributed to this repository. You can add your name here by getting involved. The first step is learning how to contribute from our [CONTRIBUTING.md](./CONTRIBUTING.md) documentation.
 
-| Name              | Role                | Github                                            | Email                                 | GPG Fingerprint                                    |
-| ----------------- | ------------------- | ------------------------------------------------- | ------------------------------------- | -------------------------------------------------- |
-| Christopher Allen | Principal Architect | [@ChristopherA](https://github.com/ChristopherA) | \<ChristopherA@LifeWithAlacrity.com\> | FDFE 14A5 4ECB 30FC 5D22  74EF F8D3 6C91 3574 05ED |
+| Name              | Role                    | Github                                           | Email                                 | GPG Fingerprint                                    |
+| ----------------- | ----------------------- | ------------------------------------------------ | ------------------------------------- | -------------------------------------------------- |
+| Christopher Allen | Principal Architect     | [@ChristopherA](https://github.com/ChristopherA) | \<ChristopherA@LifeWithAlacrity.com\> | FDFE 14A5 4ECB 30FC 5D22  74EF F8D3 6C91 3574 05ED |
+| Namcios           | Developer and Co-Author | [@namcios](https://github.com/namcios)           | \<namcios@protonmail.com\>            | 55A2 4BE0 AEE5 DB41 52C6 A410 8E3A 3683 1726 9AB4  |
 
 ## Responsible Disclosure
 
