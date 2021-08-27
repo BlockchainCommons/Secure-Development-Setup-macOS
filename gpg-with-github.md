@@ -379,6 +379,41 @@ to get back to the last commit you want to keep
 then filter-branch as above to resign from commit from before first commit to fix to HEAD
 this step not necessary. I did it since I had 18 resigned commits as I kept trying things that were skipping the commit I actually needed to fix. So to remove those I reset back... If you don't want to lose the commits in between, don't do this.
 
-
 THEN you must force push
 `git push origin branchname -f`
+
+
+
+## Troubleshooting
+
+Some things you can try depending on what is not working as expected.
+
+- In general terms, you may need to sign a test message for settings to sync and/or pinentry-mac save your passphrase. The following will likely prompt for your passphrase, type it in and check "save in keychain":
+
+  ```
+  $ echo "test" | gpg --clearsign
+  ```
+
+- If pinentry-mac or your GPG agent is not working, go back to the "Configure Pinentry-Mac" section and make sure you're configuration file has that line. You can also do the following again:
+
+  ```
+  $ killall gpg-agent
+  ```
+
+  The above will most likely solve it, but if not, you can also try starting the agent in daemon mode:
+
+  ```
+  $ gpg agent --daemon
+  ```
+
+  Maybe try signing the test message again now.
+
+- If commits on the web or on GitHub Desktop aren't being signed:
+
+  - Make sure that, in your [Github account email preferences](https://github.com/settings/emails), "Keep my email addresses private" is _not checked_
+  - In GitHub Desktop, go to "GitHub Desktop > Preferences > Git" and check that your email address there matches your GPG key's email address, your primary email address on GitHub, and your user.email info on local git. To see the latter, you can type the following in the terminal:
+
+  ```
+  $ git config user.email
+  ```
+
