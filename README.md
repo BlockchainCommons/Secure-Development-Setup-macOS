@@ -25,7 +25,7 @@ The scripts automate what is suggested in the documentation, however, it might h
   - [GPG with GitHub](gpg-with-github.md) walks through the creation process of a new GPG keypair and the steps necessary to configure GitHub to use your new GPG keypair for commit signing.
 - Scripts
   - [initial-macos-developer-setup.sh](initial-macos-developer-setup.sh) installs core development dependencies on your Mac, including updates, Xcode Command Line Tools and brew, tapping essential sources, and checking for necessary updates.
-  - [additional-setup.sh](additional-setup.sh) installs extra tools for your development needs, including git, GitHub CLI, GPG (create new GPG keys, configure gpg and pinentry-mac, create a revocation certificate, configure git to allow GPG signed commits) , GitHub Desktop, and a text editor/code IDE of your choice. After running this script, all you need to do is add your public key block (which will be in ~/public-key.txt) to `GitHub Account > Settings > SSH and GPG keys > New GPG key` at [GitHub.com](https://github.com).
+  - [additional-setup.sh](additional-setup.sh) installs extra tools for your development needs if they're not already installed, including git, GitHub CLI, GnuPG (as well as create new GPG keys, configure gpg and pinentry-mac, create a revocation certificate, configure git to allow GPG signed commits), GitHub Desktop, and a text editor/code IDE of your choice.
 
 ## Status - EARLY DRAFT
 
