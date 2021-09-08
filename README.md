@@ -6,17 +6,17 @@ This repo offers documentation and scripts for setting up git, github, gpg and s
 
 ## Additional Information
 
-At this time these documents and scripts are focused on installation of a secure developer tool environment for a macOS Big Sur 11.5 on Intel Mac computer.
+At this time these documents and scripts are focused on installation of a secure developer tool environment for a macOS Big Sur 11.5 on an Intel Mac computer.
 
-In particular, the scripts in this repo are being tested using a VMware Fusion instance to allow for use of snapshots and restoration, and thus they have not been tested against a real Macintosh hardware at this time. They also are intended for use on a NEW Macintosh, and may destroy or compromise your development environment on an existing Macintosh.
+In particular, the scripts in this repo are being tested using a VMware Fusion instance to allow for use of snapshots and restoration, and thus they have not been tested against real Macintosh hardware at this time. They are intended for use on a NEW Macintosh, and may destroy or compromise your development environment on an existing Macintosh.
 
 >  NOTE: Compatibility with M1 Macs (Apple Silicon) is not currently ensured.
 
 ### Index
 
-The documentation provided in this repo explain what you should know to work on the command line and what you should install on your Mac to get started developing.
+The documentation provided in this repo explains what you should know to work on the command line and what you should install on your Mac to get started developing.
 
-The scripts automate what is suggested in the documentation, however, it might help to have the documentation open since some of the steps will be interactive. Having the docs open while you run the scripts will allow you to choose the best options when prompted for inputs. However, the scripts also print some hints to the console as to what you should select and when.
+The scripts automate what is suggested in the documentation. However, it might help to have the documentation open since some of the steps will be interactive. Having the docs open while you run the scripts will allow you to choose the best options when prompted for inputs. The scripts also print some hints to the console as to what you should select and when.
 
 - Documentation
   - [Mac Command Line 101](Mac\ Command\ Line\ 101/) provides an introductory guide for learning about the command line interface on a Mac, assuming no previous knowledge.
