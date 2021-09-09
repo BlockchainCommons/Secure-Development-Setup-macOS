@@ -7,13 +7,11 @@ What is the Command Line Interface?
 -----------------------------------
 Underneath the wonderful Mac Graphical User Interface ("GUI") is a powerful and flexible method of working directly with files and the web. This is known as the "command line interface", or sometimes "CLI".
 
-It may seem geeky at first, and its depth may seem intimidating, but you don't need to learn it all of it for it for the command line to become quite useful to you. In particular, in order to learn how to program web applications or clients effectively on the Mac, you will need to have some comfort with the basics of the Mac command line.
+It may seem geeky at first, and its depth may seem intimidating, but you don't need to learn all of it for the command line to become quite useful to you. In particular, in order to learn how to program web applications or clients effectively on the Mac, you will need to have some comfort with the basics of the Mac command line.
 
 The Terminal, the Console, the Shell, and the Command Line
 ----------------------------------------------------------
-First, you should learn how to start the built-in application that runs the Mac CLI, called the _Terminal_. To launch it, rather than the usual GUI method of opening the Applications/Utilities directory and double-clicking the Terminal app, instead you should learn to launch the Terminal solely by using your keyboard.
-
-Type `command + spacebar` and then type `terminal` and press return. In fact, you don't even need to typically type the whole word -- just the first few letters `ter` or `term` is usually enough.
+First, you should learn how to start the built-in application that runs the Mac CLI, called the _Terminal_. You could launch it with the usual GUI method of opening the Applications/Utilities directory and double-clicking the Terminal app, but you can also launch the Terminal solely by using your keyboard: type `command + spacebar` and then type `terminal` and press return. In fact, you don't even need to typically type the whole word -- just the first few letters `ter` or `term` is usually enough.
 
 When Terminal first opens, you should see a small window with this text in it:
 
@@ -21,15 +19,15 @@ When Terminal first opens, you should see a small window with this text in it:
 Last login: {some date} on console
 COMPUTERNAME:~ USERNAME$ 🁢
 ```
-The window you see is created by the _Terminal_ application, which more properly a form of _terminal emulator_ and its contents (any commands and the text output from previous commands) are known as the _console_. These words come from the days when you had a green CRT screen and keyboard –- the machine as a whole was the the _terminal_, and the contents of the screen was the _console_. Our _terminal emulator_ provides us the experience of typing into an old school terminal from the convenience of our modern graphical operating system.
+The window you see is created by the _Terminal_ application, which more properly is a form of _terminal emulator_, and its contents (any commands and the text output from previous commands) are known as the _console_. These words come from the days when you had a green CRT screen and keyboard –- the machine as a whole was the the _terminal_, and the contents of the screen was the _console_. Our _terminal emulator_ provides us the experience of typing into an old school terminal from the convenience of our modern graphical operating system.
 
 The text before and including the $ is known as the _prompt_. The _command line_ is everything after the current prompt, and is the portion of the console where you can type.
 
 The 🁢 symbol is the location of your _text cursor_ on the command line. Anything you type will appear under the text cursor and the text cursor will move to the next spot.
 
-All the text you see in the console was created by what is known as the _shell_ application (the Mac defaults to the shell application known as _zsh_).
+All the text you see in the console was created by what is known as the _shell_ application. (The Mac defaults to the shell application known as _zsh_.)
 
-Often the words terminal, console, command line, shell, or bash are used interchangeably, but these each are are all slightly different.
+Often the words terminal, console, command line, shell, and bash are used interchangeably, but they are are all slightly different.
 
 Someday you may want to switch to a more sophisticated Terminal applications (_iTerm_ is popular), or switch to a more sophisted text shell (_tsch_ is popular), or both. For the purpose of this _Intro to the Command Line_ tutorial we will only be using the default Mac _Terminal_ app, and the _zsh_ command line text shell.
 
@@ -52,11 +50,11 @@ drwxr-xr-x+  5 USERNAME  staff   170 Oct 21 18:44 Public
 COMPUTERNAME:~ USERNAME$ 🁢
 ```
 
-Nearly all commands follow a common pattern with 3 main parts. The program, the options, and the arguments, each separated by spaces.
+Nearly all commands follow a common pattern with 3 main parts: the program, the options, and the arguments, each separated by spaces.
 
-The program is the verb, in this case the first part `ls`, which is short for _list_, which will show us a list of files.
+The program is the verb, in this case, the first part, `ls`, which is short for _list_, which will show us a list of files.
 
-The options are like the adverb, and modify how the program is run. Options almost always begin with a hyphen. In this example `-l` means _long_, so the `ls` command will now show us more detailed information rather than just the names of the files.
+The options are like an adverb, and modify how the program is run. Options almost always begin with a hyphen. In this example `-l` means _long_, so the `ls` command will now show us more detailed information rather than just the names of the files.
 
 The arguments are what is left, and are the objects of our command. They describe what we want our program to act on. In this case we are using a special shorthand name for our home directory `~`.
 
@@ -73,7 +71,7 @@ COMPUTERNAME:~ USERNAME$ pwd
 COMPUTERNAME:~ USERNAME$ 🁢
 ```
 
-The command `pwd` is short for 'present working directory' which basically means "Where am I now?". The result of `pwd` is the _path_ to where any commands without arguments will default to.
+The command `pwd` is short for 'print working directory' which basically means "Where am I now?". The result of `pwd` is the _path_ to where any commands without arguments will default to.
 
 ```
 COMPUTERNAME:~ USERNAME$ ls
@@ -82,10 +80,12 @@ Documents	Library		Music		Public
 COMPUTERNAME:~ USERNAME$ 🁢
 ```
 
-Notice that the `ls` command showed us one additional directory that you can't see from your Mac's Finder GUI: the Library directory. There can be other invisible files. We can see these by adding to the `ls` command an option, in this case `-a`.  Together the command and option `ls -a` means 'list all'.
+Notice that the `ls` command shows us one additional directory that you can't see from your Mac's Finder GUI: the Library directory. 
+
+There can be other invisible files. We can see them by adding an `-a` option to the `ls` command.  Together, the command and option `ls -a` means 'list all'.
 
 ```
-COMPUTERNAME:~ USERNAME$ ls
+COMPUTERNAME:~ USERNAME$ ls -a
 .			Desktop			Movies
 ..			Documents		Music
 .CFUserTextEncoding	Downloads		Pictures
@@ -119,7 +119,7 @@ drwxr-xr-x+  5 USERNAME  staff   170 Oct 21 18:44 Public
 COMPUTERNAME:~ USERNAME$ 🁢
 ```
 
-With the `-l` option the `d` on the left tells you that the item in the directory contains another directory. A hyphen `-` tells you that the item is a file.
+With the `-l` option the `d` on the left tells you that the item in the directory contains another directory. A hyphen `-` in that space would you that the item is a file.
 
 You can combine options, so `ls -la` will list all the information about all the contents of the current directory, including hidden dot `.` files and invisible directories like the `Library`.
 
@@ -249,7 +249,7 @@ USERNAME Shared
 COMPUTERNAME:~ USERNAME$ 🁢
 ```
 
-Now lets add your user name (if it has a space in it try tab completion!):
+Next, add your user name (if it has a space in it try tab completion!):
 
 ```
 COMPUTERNAME:~ USERNAME$ls /Users/USERNAME
@@ -260,13 +260,13 @@ COMPUTERNAME:~ USERNAME$ 🁢
 
 This is is your current working directory, which is also the default "home" directory that the shell application defaults to, so it gives same exact result as `ls` by itself.
 
-Your home directory `/Users/USERNAME/` or `~` for short, contains your personal files and directories. For example Pictures, Music, Documents, etc. Each of these directories is referenced as /home/USERNAME/{directory name}. For example Documents is located at /home/USERNAME/Documents.
+Your home directory `/Users/USERNAME/` or `~` for short, contains your personal files and directories. For example: Pictures, Music, Documents, etc. Each of these directories is referenced as /home/USERNAME/{directory name}. For example Documents is located at /home/USERNAME/Documents.
 
-This home path will be different for each user of the machine, so there is a shortcut for it that is different for each user, taking them to their home directory. This is the tilde character `~`. Thus `ls`, `ls /Users/USERNAME/` and 'ls ~` all give the same result.
+This home path will be different for each user of the machine, so there is a shortcut for it that is different for each user, taking them to their home directory. This is the tilde character `~`. Thus, `ls`, `ls /Users/USERNAME/` and 'ls ~` all give the same result.
 
 Like with directories, files are referenced in the same way, for example a file named temp.txt located at the home directory of the user christophera can be referenced using the full path `/Users/christophera/temp.txt` or `~/temp.txt` by that user.
 
-Both files and directories can be referenced using their absolute paths from everywhere in the system. Additionally one can access them using only their name if it is in the same directory. For example, if your current working directory is `~` when using the terminal, you can access `/Users/USERNAME/temp.txt` file by entering just `temp.txt`.
+Both files and directories can be referenced using their absolute paths from everywhere in the system. Additionally, one can access them using only their name if it is in the same directory. For example, if your current working directory is `~` when using the terminal, you can access `/Users/USERNAME/temp.txt` file by entering just `temp.txt`.
 
 Changing Working Directory
 --------------------------
@@ -291,7 +291,7 @@ To return to your home directory, you can type `cd` with no options or arguments
 Creating a Temp Directory
 -----------------------------
 
-In most of the remaining examples I'm no longer going to demonstrate the full prompt. Instead, when you see the first `$` it shows where you are to type to the right of that prompt. A final `$` with no text shows that the the output from your command has completed.
+In most of the remaining examples I'm no longer going to demonstrate the full prompt. Instead, when you see the first `$`, that shows to type to the right of that prompt. A final `$` with no text shows that the the output from your command has completed.
 
 As we don't want to clutter our home directory with lots of files, let's create a `temp` directory to hold our future work. We will use the `mkdir` (_make directory_) command, then enter the folder with the `cd` command, and confirm that we are there with the `pwd' command.
 
@@ -329,7 +329,7 @@ $ open temp.txt
 $
 ````
 
-Enter some text in that file, save it (use `command + S`) and close it (use `command + W`). Then go back to terminal using either `command + tab` to cycle through your apps, or `command + space + term`. When using the Mac command-line it is important to learn these command keys — your hands should rarely need to leave the keyboard.
+Enter some text in that file, save it (use `command + S`) and close it (use `command + W`). Then go back to terminal using either `command + tab` to cycle through your apps, or `command + space + term`. When using the Mac command-line. It is important to learn these command keys: your hands should rarely need to leave the keyboard.
 
 Now we can display that text using the `cat` command (whose name is short for _concatenate_).
 
@@ -339,7 +339,7 @@ The quick brown fox jumped over the lazy dog.
 $
 ````
 
-If there were many pages of text, you can also use the `more` command, which if there is more than window of text will display one window full at a time. Just type `space` to see the next window, or `q` to quit, or `h` to see a list of other choices.
+If there were many pages of text, you could alternatively use the `more` command, which will display one window full at a time if there is more than window of text: just type `space` to see the next window, or `q` to quit, or `h` to see a list of other choices.
 
 Now we can copy that file using the `cp` (_copy_) command.
 
@@ -401,7 +401,7 @@ $
 The .. and . Relative Paths
 ---------------------------
 
-There are two special paths, the `.` and '..` - these are are used for what are _relative_ paths.
+There are two special paths, the `.` and '..`: these are _relative_ paths, which are related to your current directory.
 
 The `..` directory is the directory _above_ the current working directory. So while still in the `~/temp` directory you type 'ls ..` and you will see the contents of the home directory:
 
@@ -412,7 +412,7 @@ Documents	Library		Music		Public
 $
 ```
 
-While in the ~/temp you can also enter `ls ..\{directory name}` to see sibling directories under the home directory.
+While in the ~/temp you can also enter `ls ../{directory name}` to see sibling directories under the home directory.
 
 If you were deep inside a complex set of directories, you can get out of them by entering `cd ..` - note how the prompt changes after each command:
 
@@ -428,12 +428,12 @@ COMPUTERNAME:temp USERNAME$ pwd
 COMPUTERNAME:~ USERNAME$
 ```
 
-A path beginning with `.`  means relative to the current working directory. In effect `ls .` is the same as `ls`. There are times when you absolutely want a path to be relative to where you are currently, use the `.` form.
+A path beginning with `.`  means relative to the current working directory. In effect `ls .` is the same as `ls`. There are times when you absolutely want a path to be relative to where you are currently; use the `.` form.
 
 The * and ? Wildcards
 ---------------------
 
-Sometimes you want copy, rename or delete multiple files all at once. We can do this by using the `*` (sometimes called  _star_) wildcard character to replace zero or more characters in a filename or directory.
+Sometimes you want to copy, rename or delete multiple files all at once. We can do this by using the `*` (sometimes called  _star_) wildcard character to replace zero or more characters in a filename or directory.
 
 The command `rm *` will delete every thing in the current working directory except for those files that are special and begin with a `.`, thus until you are very experienced, I recommend that you always use the `-i` (for _interactive_) option when using `rm`.
 
@@ -536,7 +536,7 @@ $ ls
 $
 ```
 
-The `*` wildcard match zero or more characters, but sometimes you may want to match only one character. In this case we use the `?` wildcard:
+The `*` wildcard match zero or more characters, but sometimes you may want to match only one character. In this case, use the `?` wildcard:
 
 ```
 $ touch task  taskA  taskB  taskXY
@@ -576,7 +576,7 @@ $
 Getting Help
 ------------
 
-If you don't remember what a command does, there is a command `whatis` that returns basic one line of information about it. You can also use it to search for complete words in a commands description:
+If you don't remember what a command does, there is a command `whatis` that returns one basic line of information about it. You can also use it to search for complete words in a commands description:
 
 ```
 $ whatis cat
@@ -633,11 +633,11 @@ Ctrl + D    Delete one character in front of cursor (same as fn-Delete)
 Ctrl + E    Move cursor to the end of the line you are currently typing on
 Ctrl + F    Move the text cursor one character forward (same as Right-Arrow)
 Ctrl + H    Delete the character behind the curor <same as Delete>
-Ctrl + K    Delete "Kills" all characters after cursor to the end of the line.
+Ctrl + K    Delete ("Kill") all characters after cursor to the end of the line.
 Ctrl + N    Move the cursor down one line (same as Down-Arrow)
 Ctrl + P    Move the cursor up one line (same as Up-Arrow)
 Ctrl + T    Swap the last two characters before the cursor
-Ctrl + Y    Pastes "Yanks" text that was Killed (Ctrl+K)
+Ctrl + Y    Paste ("Yank") text that was Killed (Ctrl+K)
 ```
 
 ### The following only work in the Mac OSX Terminal using the default zsh shell:
@@ -645,28 +645,28 @@ Ctrl + Y    Pastes "Yanks" text that was Killed (Ctrl+K)
 ```
 Ctrl + C    Kill whatever you are running
 Ctrl + D    Exit the current shell
-Ctrl + G    Aborts the current incremental search, restoring the original command at the prompt
-Ctrl + J    Stops incremental search (Ctrl-R or Ctrl-S) and puts the found command at the prompt
-Ctrl + L    Clears the the terminal window, leaving the current command at the prompt, similar to the clear command
-Ctrl + R    Incrementally searches back through previously used commands (with history or !)
-Ctrl + S    Incrementally searches forward through previously used commands (with history or !)
-Ctrl + U    Clears the line before the cursor position. If you are at the end of the line, clears the entire line.
+Ctrl + G    Abort the current incremental search, restoring the original command at the prompt
+Ctrl + J    Stop incremental search (Ctrl-R or Ctrl-S) and puts the found command at the prompt
+Ctrl + L    Clear the the terminal window, leaving the current command at the prompt, similar to the clear command
+Ctrl + R    Incrementally search back through previously used commands (with history or !)
+Ctrl + S    Incrementally search forward through previously used commands (with history or !)
+Ctrl + U    Clear the line before the cursor position. If you are at the end of the line, clears the entire line.
 Ctrl + W    Delete the word before the cursor
-Ctrl + Z    Puts whatever you are running into a suspended background process. fg restores it.
+Ctrl + Z    Put whatever you are running into a suspended background process. `fg` restores it.
 Ctrl + _    Undo the last editing command; you can undo all the way back to an empty line
 Esc + B     Move cursor backward one word on the current line
 Esc + D     Delete one word in front of cursor
 Esc + F     Move cursor forward one word on the current line
 Esc + R     Undo all changes made to this line
 Esc + T     Swap the last two words before the cursor
-Esc + Y     Pastes "Yanks" text that was previous Killed (Ctrl+K) before the last Kill
+Esc + Y     Paste ("Yank") text that was previous Killed (Ctrl+K) before the last Kill
 Tab         Auto-complete files and folder names
 Tab Tab     Display all possible auto-complete values
 ```
 
 ### Mouse in Terminal
 ```
-Opt + Click Moves cursor to where the mouse was clicked in many shell editors.
+Opt + Click Move cursor to where the mouse was clicked in many shell editors.
 ```
 
 ## Meta commands
