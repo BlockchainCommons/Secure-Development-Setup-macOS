@@ -27,7 +27,7 @@ The 🁢 symbol is the location of your _text cursor_ on the command line. Anyth
 
 All the text you see in the console was created by what is known as the _shell_ application. (The Mac defaults to the shell application known as _zsh_.)
 
-Often the words terminal, console, command line, shell, and bash are used interchangeably, but they are are all slightly different.
+Often the words terminal, console, command line, shell, and bash are used interchangeably, but they are all slightly different.
 
 Someday you may want to switch to a more sophisticated Terminal applications (_iTerm_ is popular), or switch to a more sophisted text shell (_tsch_ is popular), or both. For the purpose of this _Intro to the Command Line_ tutorial we will only be using the default Mac _Terminal_ app, and the _zsh_ command line text shell.
 
@@ -119,7 +119,7 @@ drwxr-xr-x+  5 USERNAME  staff   170 Oct 21 18:44 Public
 COMPUTERNAME:~ USERNAME$ 🁢
 ```
 
-With the `-l` option the `d` on the left tells you that the item in the directory contains another directory. A hyphen `-` in that space would you that the item is a file.
+With the `-l` option the `d` on the left tells you that the item in the directory contains another directory. A hyphen `-` in that space would tell you that the item is a file.
 
 You can combine options, so `ls -la` will list all the information about all the contents of the current directory, including hidden dot `.` files and invisible directories like the `Library`.
 
