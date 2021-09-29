@@ -3,9 +3,9 @@
 Part 2 - Preparation and Installation
 =====================================
 
-Every Mac supports a large numer of command line tools, however, not every program that you need for development is included by default. This tutorial instructs you on how to prepare and configure your Mac to make it a powerful development system.
+Every Mac supports a large numer of command line tools. However, not every program that you need for development is included by default. This tutorial instructs you on how to prepare and configure your Mac to make it a powerful development system.
 
-You do not need to deeply understand all the commands that are used here — they are explained briefly, but you do not need to learn them yet. I am explaining only because it is YOUR computer and you should know what and why these tools have been added.
+You do not need to deeply understand all the commands that are used here; they are explained briefly, but you do not need to learn them yet. I am explaining only because it is YOUR computer and you should know what tools have been added and why.
 
 System Updates
 --------------
@@ -14,7 +14,7 @@ The first thing you need to do is to make sure that you have the most recent ver
 
 You can get all your system updates by going the the _About This Mac_ item under the Apple Menu, clicking on the _Software Update_ button and pressing the _Update Now_ button. However, you can also do it from the command line.
 
-The `sudo` command is used to run programs that need additional privileges to change your computer, and thus your Mac's administrative password. `/usr/sbin/softwareupdate -l` is the program that checks with Apple's update servers for the most recent version. You may need to execute this command multiple times, or even reboot your system if your Mac is not current.
+The `sudo` command is used to run programs that need additional privileges because they change your computer; it requires your Mac's administrative password. `/usr/sbin/softwareupdate -l` is the program that checks with Apple's update servers for the most recent version. You may need to execute this command multiple times, or even reboot your system if your Mac is not current.
 
 ```
 $ cd ~
@@ -38,13 +38,13 @@ $
 Install Apple's Command Line Tools
 ----------------------------------
 
-Next we are going to install Apple's Command Line Tools, which will install a number of development tools that will be available from the command line. There is a "trick" of touching a file that makes this happen from the command line without loading Apple's XCODE development environment for creating Mac and iOS apps.
+Next, we are going to install Apple's Command Line Tools, which will install a number of development tools that will be available from the command line. It uses a "trick" of touching a file to make this happen from the command line without loading Apple's XCODE development environment (which is used for creating Mac and iOS apps).
 
 Because you've recently entered an administrative password for the `sudo` command, the shell may not ask you for your admin password again.
 
 ```
 $ touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
-sudo /usr/sbin/softwareupdate -ia
+$ sudo /usr/sbin/softwareupdate -ia
 Software Update Tool
 Copyright 2002-2012 Apple Inc.
 
@@ -58,7 +58,7 @@ Done.
 $/bin/rm /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
 ```
 
-With this installation you have just installed 92 development tools into your /Library/Developer/CommandLineTools/bin/
+With these commands, you have just installed 92 development tools into your /Library/Developer/CommandLineTools/bin/
 
 ```
 BuildStrings CpMac DeRez GetFileInfo MergePef MvMac ResMerger Rez RezDet RezWack SetFile SplitForks UnRezWack ar as asa bison c++ c89 c99 cc clang clang++ cmpdylib codesign_allocate cpp ctags ctf_insert dsymutil dwarfdump dyldinfo flex flex++ g++ gatherheaderdoc gcc gcov git git-cvsserver git-receive-pack git-shell git-upload-archive git-upload-pack gm4 gnumake gperf hdxml2manxml headerdoc2html indent install_name_tool ld lex libtool lipo lldb llvm-cov llvm-profdata lorder m4 make mig mkdep nasm ndisasm nm nmedit otool pagestuff projectInfo ranlib rebase redo_prebinding resolveLinks rpcgen segedit size strings strip svn svnadmin svndumpfilter svnlook svnrdump svnserve svnsync svnversion unifdef unifdefall unwinddump what xml2man yacc
@@ -71,7 +71,7 @@ Create Some Additional Folders in Home
 
 I find it useful to prepare in advance some additional folder in my home "~" directory. The convention I use is that if the folder starts with a Capital, the folder contains items for Finder's GUI. If the folder begins with a lower-case letter (making it faster to type) then it is to be used by the CLI.
 
-All of these folders are optional — many you will not use until much later in this tutorial:
+All of these folders are optional; many you will not use until much later in this tutorial:
 
 * ~/.dotfiles # This is where I backup my dotfiles (explained later) and store some other useful tools.
 * ~/.dotfiles/bin # This is where I keep small command line scripts that I use regularly.
@@ -99,9 +99,9 @@ Installing Brew
 
 Next we are going to install [Homebrew](http://brew.sh) (known as `brew` for short), a software package manager.
 
-You can consider `brew` to be an app store for open source web apps and developer tools. There are thousands of different open source code bases, all with various dependences on each other, and each requiring different configurations for what kind of computer OS it is running on (Linux, Unix, Mac, Windows, etc.). Brew manages those complexities. If you request to install a particular tool that needs other packages, tools or libraries to run, Brew will first install them in the correct order. Brew also stores its files in some specific ways that are best practices so that different tools don't interfere with each other.
+You can consider `brew` to be an app store for open-source web apps and developer tools. There are thousands of different open-source code bases, all with various dependences on each other, and each requiring different configurations for what kind of computer OS it is running on (Linux, Unix, Mac, Windows, etc.). Brew manages those complexities. If you request to install a particular tool that needs other packages, tools or libraries to run, Brew will first install them in the correct order. Brew also stores its files in specific ways that respect best practices, so that different tools don't interfere with each other.
 
-Brew is not installed on your Mac by default, so you'll need to run a script to install it. They provide a script to install it on their github site, which is run by `bash` which is installed on your Mac by default. WARNING: Be cautious whenever someone asks you to run a script that has `curl` command in it, because if the author is malicious they can corrupt your system or make it vulnerable. In this case the script is run from a trusted website (github), and is from a trusted account there (Homebrew). I suggest you go to the [Homebrew](http://brew.sh) website and confirm that this is the correct script to use.
+Brew is not installed on your Mac by default, so you'll need to run a script to install it. They provide a script to install it on their github site, which is run by `bash`, which is installed on your Mac by default. WARNING: Be cautious whenever someone asks you to run a script that has `curl` command in it, because if the author is malicious they can corrupt your system or make it vulnerable. In this case the script is run from a trusted website (github), and is from a trusted account there (Homebrew). I suggest you go to the [Homebrew](http://brew.sh) website and confirm that this is the correct script to use.
 
 This script may ask you for your administrator password.
 
@@ -181,14 +181,14 @@ Your system is ready to brew.
 $
 ```
 
-If there were any errors, `brew doctor` will tell you how to fix them. If what it suggests to fix the problem doesn't work, I find that almost every problem that has come up is a question on the website [StackOverflow](http://stackoverflow.com) so search for your solution there.
+If there were any errors, `brew doctor` will tell you how to fix them. If what it suggests to fix the problem doesn't work, I find that almost every problem that has come up has a question on the website [StackOverflow](http://stackoverflow.com) so search for your solution there.
 
 Install Git
 -----------
 
-The first command line application we will install is [Git](http://git-scm.com), which is the most popular source code version control system. A source code control system helps you manage the production of your code, backup and restore different versions of your code, and work cooperatively with others. `git` is popular because it is open source, it is distributed (i.e. there isn't one master repository the files have to come from), works with projects as large as the Linux operating system with thousands of contributors, small team projects, and yet is useful for even for a single programmer.
+The first command line application we will install is [Git](http://git-scm.com), which is the most popular source code version control system. A source code control system helps you manage the production of your code, backup and restore different versions of your code, and work cooperatively with others. `git` is popular because it is open source, it is distributed (i.e. there isn't one master repository the files have to come from), it works with projects as large as the Linux operating system with thousands of contributors, and with small team projects, and yet is useful even for a single programmer.
 
-We will use `brew` to install git, so always before we brew anything we want to make sure that `brew` is current. We just installed it so we don't really need to do this now, but I will demonstrate best practices (everything after a # is a comment):
+We will use `brew` to install git, so always before we brew anything we want to make sure that `brew` is current. We just installed it, so we don't really need to do this now, but I will demonstrate best practices (everything after a # is a comment):
 
 ```
 $ brew doctor # run self test to see if brew is running properly
@@ -253,7 +253,7 @@ git config --global push.default simple
 Installing GitHub CLI
 ---------------------
 
-[GitHub CLI](https://cli.github.com/) brings GitHub to your terminal. It includes a set of features and commands to facilitate your interaction with GitHub. It allows you to work with issues, pull requests, checks, releases, and more directly in your terminal. You can find all the available `gh` commands in the [online manual](https://cli.github.com/manual/) and some `gh` tips [here](https://gist.github.com/ChristopherA/3cca24936fb2c84786a29f67bacacd3e).
+[GitHub CLI](https://cli.github.com/) brings GitHub to your terminal. It includes a set of features and commands to facilitate your interaction with GitHub. It allows you to work with issues, pull requests, checks, releases, and more, directly in your terminal. You can find all the available `gh` commands in the [online manual](https://cli.github.com/manual/) and some `gh` tips [here](https://gist.github.com/ChristopherA/3cca24936fb2c84786a29f67bacacd3e).
 
 Install `gh` with `brew`:
 ```
@@ -270,7 +270,7 @@ If you want to log into a personal account, select `GitHub.com`.
 
 Select your preferred auth method. Selecting `SSH` will help you create [ssh keys for usage with GitHub](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh). You can then select "upload your SSH public key to your GitHub account."
 
-When asked how to authenticate, select "Paste an authentication token." Open your [tokens section on GitHub](https://github.com/settings/tokens), click _Generate new token_. Now you need to give it a descriptive name, like _github cli_ for example and select its permissions. `gh` requires at least three: `repo`, `read:org` and `admin:public_key`. Select those, and any additional ones if you so wish, and hit create! Now you just need to copy that token and paste it into the terminal. _Do not close the browser window before copying the token! This is your only chance to copy it, it will disapear afterwards. If you mess up, generate a new token._
+When asked how to authenticate, select "Paste an authentication token." Open your [tokens section on GitHub](https://github.com/settings/tokens), click _Generate new token_. Now you need to give it a descriptive name, like _github cli_ for example and select its permissions. `gh` requires at least three: `repo`, `read:org` and `admin:public_key`. Select those, and any additional ones if you so wish, and hit create! Now you just need to copy that token and paste it into the terminal. _Do not close the browser window before copying the token! This is your only chance to copy it; it will disapear afterwards. If you mess up, generate a new token._
 
 You should be set up with `gh` by now!
 
@@ -308,7 +308,7 @@ This will uninstall the Cask and remove the application which was moved to `/App
 Installing the Atom Text Editor
 -------------------------------
 
-Next we are going to use `brew` to install the Atom text editor. There are many powerful command line text editors out there (and a constant battle between fans of emacs vs those for vim), but learning them is outside the scope of this tutorial. In the meantime there is a very powerful, free and open source GUI text editor optimized for command line and web developers called Atom. One of its best features is its integration with Git.
+Next we are going to use `brew` to install the Atom text editor. There are many powerful command line text editors out there (and a constant battle between fans of emacs vs those for vim), but learning them is outside the scope of this tutorial. In the meantime there is a very powerful, free and open-source GUI text editor optimized for command line and web developers called Atom. One of its best features is its integration with Git.
 
 We will install it with `brew`
 
@@ -411,7 +411,7 @@ Install GitHub Desktop
 
 :warning: Before moving forward, make sure you have done everything in this guide and have also done [GPG configuration](../gpg-with-github.md). Particularly, make sure you opted to _enable GPG signing for all repositories using the --global flag in that tutorial._ If you are certain you have gone through all the steps to set up GPG but can't remember if you enabled GPG signing for your commits globally or not, you can quickly open a Terminal window and type: `
 
-If you do not enjoy using the command line, you can contribute to open source software using GitHub Desktop, which you can download as a `brew` Cask.
+If you do not enjoy using the command line, you can contribute to open-source software using GitHub Desktop, which you can download as a `brew` Cask.
 ```
 $ brew install github
 ==> Downloading https://desktop.githubusercontent.com/releases/2.9.0-4806a6dc/GitHubDesktop-x64.zip
@@ -422,14 +422,14 @@ $ brew install github
 ```
 You will then be able to find the GitHub Desktop application in your `/Applications` folder. Go ahead and give that a double-click and open it. It will prompt for you to sign in, which you should do. It will open a window in your default browser, through which you will be requested to sign into your GitHub account. Do that and authorize GitHub Desktop to obtain your GitHub profile information.
 
-Now, before moving forward, go to GitHub Desktop's _Preferences_ (you can use the `Cmd + ,` shortcut within the app). Under _Account_, you should be signed in. Now, head over to _Git_ in the same window and _make sure your selected email matches both your committer email and your GPG key email!_ If it doesn't, change it for the one that does.
+Now, before moving forward, go to GitHub Desktop's _Preferences_ (you can use the `Cmd + ,` shortcut within the app). Under _Account_, you should be signed in. Now, head over to _Git_ in the same window and _make sure your selected email matches both your committer email and your GPG key email!_ If it doesn't, change it to the one that does.
 
-If you have set up brew, git, gh, github desktop, ssh, (basically everything in this guide so far) correctly, you will be able to work with GitHub and contribute to open source projects using the nice UX of GitHub Desktop –– and your commits will be automatically signed!
+If you have set up brew, git, gh, github desktop, ssh, (basically everything in this guide so far) correctly, you will be able to work with GitHub and contribute to open-source projects using the nice UX of GitHub Desktop –– and your commits will be automatically signed!
 
 Brew Cleanup
 -------------------
 
-Ater we `brew` anything it is best practices to tell brew to cleanup. You don't have to do this after each item brew, you can brew a number of items at once and only cleanup after.
+Ater we `brew` anything it is best practices to tell brew to cleanup. You don't have to do this after each item brew; you can brew a number of items at once and only cleanup after.
 
 ```
 $ brew doctor
