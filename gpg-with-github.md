@@ -6,6 +6,8 @@ GitHub allows you to use GPG to sign commits. You can use an existing GPG key or
 
 You can find GitHub's official documentation about GPG commit signature verification [here](https://docs.github.com/en/github/authenticating-to-github/managing-commit-signature-verification/about-commit-signature-verification#gpg-commit-signature-verification). And here's a [GPG cheatsheet](http://irtfweb.ifa.hawaii.edu/~lockhart/gpg/).
 
+What follows is a guide specifically for using GPG with GitHub from your Mac.
+
 ### Install GPG
 
 Install GPG command line tools and pinentry-mac with Brew:
@@ -92,7 +94,7 @@ Key is valid for? (0)
 
 You should set your key to expire by 2 years or less after creation date, per [GPG best practices](https://help.riseup.net/en/security/message-security/openpgp/best-practices). For simplicity, type either `2y` or `1y` into the Terminal window. Type `y` when asked for confirmation.
 
-> **Note:** since you will likely not remember to extend your key's lifetime, set a calendar reminder for that. Make it so that it reminds you one month or more before the expiry date -- you likely don't want to do that on a rush. If you do end up forgetting somehow, and it expires, you would still be able to extend it -- so no need to create a new key just because of that.
+> **Note:** since you will likely not remember to extend your key's lifetime, set a calendar reminder for that. Make it so that it reminds you one month or more before the expiry date: you likely don't want to extend that date in a rush. If you do end up forgetting somehow, and it expires, you would still be able to extend it -- so no need to create a new key just because of that.
 
 Now you need to provide your user ID information.
 
@@ -104,7 +106,7 @@ Real name:
 
 Type your desired name. Then, type in your email address.
 
-> :warning: Make sure you type the email address which you use with GitHub and is set as your commit email address. This will make it a lot easier going forward, since GitHub will check if all email addresses match for marking your commit as verified. If the emails don't match, the commit may show "unverified" status even though it was signed!
+> :warning: Make sure you type the email address that you use with GitHub and which is set as your commit email address. This will make it a lot easier going forward, since GitHub will check if all email addresses match for marking your commit as verified. If the emails don't match, the commit may show "unverified" status even though it was signed!
 
 Do not provide a comment -- press `return` and skip it. Your user ID will be prompted and you'll be asked for confirmation, press `o` or `q` to confirm and move forward.
 
@@ -112,7 +114,7 @@ Pinentry-mac will now likely ask for a passphrase. You should pick a secure yet 
 
 1. Grab a dice and open up [EFF's word list](https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt).
 2. Your passphrase should consist of at least 4 but _ideally 6 words_. You need 5 dice rolls for each word.
-3. So roll the dice 5 times and that, in order, will give you your first word by matching it on EFF's word list.
+3. So, roll the dice 5 times; that, in order, will give you your first word by revealing it on EFF's word list.
 4. Do that 6 times and you will have a secure and memorable passphrase to use with your new GPG key. Make sure you don't forget it! You can also have a physical backup of that passphrase on paper -- just make sure you store it in a secure place.
 
 Now, tell GnuPG to use only the longer, more secure 16-character GPG key IDs:
@@ -155,11 +157,11 @@ If you can't remember, you can grab your KeyID with the command `gpg --list-secr
 
 > Optionally, use the automated command `KEY_ID=$(gpg --list-secret-keys | grep sec | awk '{print substr ($0, 15, 16)}')` to save your key ID into the variable `KEY_ID`, accessible in the terminal with `$KEY_ID`.
 
-You might be asked the reason for creating the revocation certificate. You can just type 0 for "no reason specified" and then, if you like, enter some description. Then you can confirm it and your revocation certificate will be generated.
+You might be asked the reason for creating the revocation certificate. You can just type 0 for "no reason specified" and then, if you like, enter some description. Then you can confirm it, and your revocation certificate will be generated.
 
-> Note: Your passphrase might be asked! If so, just type it in and hit `return`. You can also select "save it in keychain" if you don't want to type it every time.
+> Note: Your passphrase might be requested! If so, just type it in and hit `return`. You can also select "save it in keychain" if you don't want to type it every time.
 
-You might want to print a hardcopy of the certificate and keep it somewhere safe (somewhere you keep sensitive documents). But note that the printer itself might be a compromise.
+You might want to print a hardcopy of the certificate and keep it somewhere safe (somewhere that you keep sensitive documents). But note that the printer itself might be a compromise.
 
 If someone gets access to your key's revocation certificate, they will be able to revoke your key, so keep it safe. _But_ if they happen to get access to your private key as well, then having them get access to your revocation certificate is a desirable thing.
 
@@ -183,13 +185,13 @@ Great, now your key ID can be easily accessed with `$KEY_ID`.
 
 ## Associate an Email Address With Your GPG Key
 
-In this section, you will be associating an email address with your selected GPG key. This is important for some reasons, but for this guide's purpose _it allows GitHub to check if your GitHub account's verified email address matches both your committer identity and the email address associated with your GPG key_.
+In this section, you will be associating an email address with your selected GPG key. This is important for multiple reasons, but for this guide's purpose _it allows GitHub to check if your GitHub account's verified email address matches both your committer identity and the email address associated with your GPG key_.
 
 > Note: if you have followed along and created your GPG key in the previous section, you _already_ have associated an email address with your key -- so you should skip this section.
 
 1. On the Terminal, type the command `gpg --edit-key $KEY_ID`
 
-4. To edit your user ID information, type:
+2. To edit your user ID information, type:
 
     `$ gpg> adduid`
     
@@ -203,7 +205,7 @@ In this section, you will be associating an email address with your selected GPG
 
 3. Enter your key's passphrase, if it has one.
 
-6. Enter `gpg> save` to save your changes.
+4. Enter `gpg> save` to save your changes.
 
 ## Add Your GPG Key to Your GitHub Account
 
@@ -227,7 +229,7 @@ OR
 $ gpg --armor --export your.email@example.com
 ```
 
-Pick _one_ of the above depending on the user ID info you find simpler to provide the command. It will print your GPG key in ASCII armor format. Copy your entire public key block, including the begin and end indications.
+Pick _one_ of the above depending on which you find simplest. `gpg` will print your GPG key in ASCII armor format. Copy your entire public key block, including the begin and end indications.
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -267,7 +269,7 @@ gpg --armor --export $KEY_ID > ~/public.key
 
 To sign commits locally, you need to tell Git what GPG key you would like to use.
 
-Set your GPG signing key for Git. Paste the command below, substituting `keyID` for your key ID:
+Set your GPG signing key for Git. Paste the command below:
 
 ```
 $ git config --global user.signingkey $KEY_ID
@@ -280,7 +282,7 @@ There are some different scenarios as to how you can sign commits.
 
 You can either sign an individual commit; tell Git you want all future commits in the repo you're in to be automatically signed; or set commit signing as default for all repos in your account.
 
-> Note: Your passphrase might be asked on each commit and signing. If so, just type it in and hit `return`. You can also select "save it in keychain" if you don't want to type it every time you commit.
+> Note: Your passphrase might be requested for each commit and signing. If so, just type it in and hit `return`. You can also select "save it in keychain" if you don't want to type it every time you commit.
 
 To sign all commits by default in all repos:
 
@@ -300,7 +302,7 @@ $ git config commit.gpgsign true
 
 ## Signing Past Commits
 
-If you ever forget to sign a commit only to realize it after, don't worry –– you can sign a past commit. And there are a couple of different ways to achieve this!
+If you ever forget to sign a commit only to realize it after, don't worry –– you can sign a past commit. There are a couple of different ways to achieve this!
 
 ### Method 1
 
@@ -308,7 +310,7 @@ The best and easiest way to change your commit history is via interactive rebase
 
 First, make sure you are in the correct repository, that is, the repository in which the commit you want to change/sign is.
 
-It might also be helpful if you make sure you've set automatic commit signing for _at least_ that repo. Best if set for all repos.
+It might also be helpful if you make sure you've set automatic commit signing for _at least_ that repo. Best if you set it for all repos.
 
 If you want to sign the third commit behind the HEAD:
 ```
@@ -337,7 +339,7 @@ pick 3239112 ok
 #
 # Note that empty commits are commented out
 ```
-We can for example reword the unsigned commit by changing `pick` to `reword` infront of it. 
+We can for example reword the unsigned commit by changing `pick` to `reword` in front of it. 
 
 Because we are changing that commit all the subsequent commits will automatically change and get a new signature.
 
@@ -366,8 +368,8 @@ Github will show you that all commits are signed (all those that are on top of t
 
 ### Method 2
 
-If method 1 didn't work, you can 
-This works but the starting commit has to be 1 before the first commit that needs to be fixed.
+If method 1 didn't work, you can do the following.
+It works, but the starting commit has to be 1 before the first commit that needs to be fixed.
 
 `git filter-branch -f --commit-filter 'git commit-tree -S "$@";' ea9083e8d80a611e90263ec827298fc79b0c13aa..HEAD`
 
@@ -386,7 +388,7 @@ THEN you must force push
 
 ## Troubleshooting
 
-Some things you can try depending on what is not working as expected.
+If something is not working as expected, you can try the following:
 
 - In general terms, you may need to sign a test message for settings to sync and/or pinentry-mac save your passphrase. The following will likely prompt for your passphrase, type it in and check "save in keychain":
 
@@ -406,7 +408,7 @@ Some things you can try depending on what is not working as expected.
   $ gpg agent --daemon
   ```
 
-  Maybe try signing the test message again now.
+  Try signing the test message again afterward.
 
 - If commits on the web or on GitHub Desktop aren't being signed:
 
