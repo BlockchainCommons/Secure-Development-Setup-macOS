@@ -277,7 +277,7 @@ You should be set up with `gh` by now!
 Set Up GPG
 ----------
 
-You should now be set up GPG for commit signature verification. Just refer to [this guide](../gpg-with-github.md) and set it up before moving forward!
+You should now set up GPG for commit signature verification. Just refer to [this guide](../gpg-with-github.md) and set it up before moving forward!
 
 Installing Casks
 ----------------
