@@ -305,15 +305,23 @@ else
     fi
 fi
 
-# Setup Git
+# Setup git user.name & user.email based on information in GPG key
 if [[ $(git config user.name) == "" && $(git config user.email) == "" ]]; then
-    log "**************************"
-    log "No git credentials configured!"
-    logn "What's your GitHub username? "
-    read GITHUB_NAME
-    logn "What's your GitHub account email? "
-    read GITHUB_EMAIL
-    log "Configuring Git..."
+
+    GITHUB_NAME=$(
+    echo $GITHUB_PUBLIC_KEY |
+        gpg --list-packets --textmode |
+        sed -n -E 's/^:user ID packet: "(.*)"$/\1/p' |
+        awk -F'<|>' '{print $1}'
+    )
+
+    GITHUB_EMAIL=$(
+    echo $GITHUB_PUBLIC_KEY |
+        gpg --list-packets --textmode |
+        sed -n -E 's/^:user ID packet: "(.*)"$/\1/p' |
+        awk -F'<|>' '{print $2}'
+    )
+    log "Configuring git user.name and user.name to match gpg key..."
     git config --global user.name "$GITHUB_NAME"
     git config --global user.email $GITHUB_EMAIL
     logk
