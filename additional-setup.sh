@@ -168,20 +168,6 @@ if [[ $(command -v git) == "" ]]; then
     logk
 fi
 
-# Setup Git
-if [[ $(git config user.name) == "" && $(git config user.email) == "" ]]; then
-    log "**************************"
-    log "No git credentials configured!"
-    logn "What's your GitHub username? "
-    read GITHUB_NAME
-    logn "What's your GitHub account email? "
-    read GITHUB_EMAIL
-    log "Configuring Git..."
-    git config --global user.name "$GITHUB_NAME"
-    git config --global user.email $GITHUB_EMAIL
-    logk
-fi
-
 # Squelch git 2.x warning message when pushing
 if ! git config push.default >/dev/null; then
     git config --global push.default simple
@@ -317,6 +303,20 @@ else
 
         logk
     fi
+fi
+
+# Setup Git
+if [[ $(git config user.name) == "" && $(git config user.email) == "" ]]; then
+    log "**************************"
+    log "No git credentials configured!"
+    logn "What's your GitHub username? "
+    read GITHUB_NAME
+    logn "What's your GitHub account email? "
+    read GITHUB_EMAIL
+    log "Configuring Git..."
+    git config --global user.name "$GITHUB_NAME"
+    git config --global user.email $GITHUB_EMAIL
+    logk
 fi
 
 # Use pinentry-mac https://github.com/Homebrew/homebrew-core/issues/14737#issuecomment-309547412
