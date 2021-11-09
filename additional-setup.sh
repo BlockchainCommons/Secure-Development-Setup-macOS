@@ -197,7 +197,7 @@ if [[ $(command -v gh) == "" ]]; then
 fi
 
 # Log into gh
-if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
+if ! (gh auth status --hostname "github.com" > /dev/null 2>&1); then
     log "**************************"
     log "You are not logged into gh!"
     log "Authenticate gh and set SSH as default."
