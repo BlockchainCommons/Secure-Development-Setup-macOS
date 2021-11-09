@@ -223,7 +223,9 @@ if [[ $(ls -a ~/ | grep .zshrc) == "" ]]; then
 fi
 
 # Add path used for `brew` formulae
-echo 'export PATH="/usr/local/sbin:$PATH"' >> ~/.zshrc
+# TODO: This is not correct for m1 macs. Should use some form of $(brew --prefix)
+# TODO: ... but not sure this is best practice replacement to fix this:
+echo 'export PATH="/usr/local/sbin:/opt/homebrew/sbin:$PATH"' >> ~/.zshrc
 
 # Install GPG and pinentry-mac
 if [[ $(command -v gpg) == "" ]]; then
@@ -318,7 +320,7 @@ else
 fi
 
 # Use pinentry-mac https://github.com/Homebrew/homebrew-core/issues/14737#issuecomment-309547412
-echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
+echo "pinentry-program $(brew --prefix)/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
 killall gpg-agent
 
 # Tell GnuPG to always use the longer, more secure 16-character key IDs
