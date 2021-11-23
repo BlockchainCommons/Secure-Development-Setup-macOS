@@ -19,9 +19,9 @@ The documentation provided in this repo explains how to work on the command line
 The scripts automate what is suggested in the documentation. However, it might help to have the documentation open since some of the steps will be interactive. Having the docs open while you run the scripts will allow you to choose the best options when prompted for inputs. The scripts also print some hints to the console as to what you should select and when.
 
 - Documentation
-  - [Mac Command Line 101](Mac\ Command\ Line\ 101/) provides an introductory guide for learning about the command line interface on a Mac, assuming no previous knowledge.
-    - [Part 1 - Basics](Mac\ Command\ Line\ 101/part1-basics.md) goes over the basic concepts of working with the command line and get familiarized with it.
-    - [Part 2 - Prepare](Mac\ Command\ Line\ 101/part2-prepare.md) outlines the creation a development environment on your Mac, as well as some tools you might want if you don't intend to use the command line for everyday tasks.
+  - [Mac Command Line 101](https://github.com/BlockchainCommons/Secure-Development-Setup-macOS/tree/master/Mac%20Command%20Line%20101) provides an introductory guide for learning about the command line interface on a Mac, assuming no previous knowledge.
+    - [Part 1 - Basics](https://github.com/BlockchainCommons/Secure-Development-Setup-macOS/blob/master/Mac%20Command%20Line%20101/part1-basics.md) goes over the basic concepts of working with the command line and get familiarized with it.
+    - [Part 2 - Prepare](https://github.com/BlockchainCommons/Secure-Development-Setup-macOS/blob/master/Mac%20Command%20Line%20101/part2-prepare.md) outlines the creation a development environment on your Mac, as well as some tools you might want if you don't intend to use the command line for everyday tasks.
   - [GPG with GitHub](gpg-with-github.md) walks through the creation process of a new GPG keypair and the steps necessary to configure GitHub to use your new GPG keypair for commit signing.
 - Scripts
   - [initial-macos-developer-setup.sh](initial-macos-developer-setup.sh) installs core development dependencies on your Mac, including updates, Xcode Command Line Tools and brew, tapping essential sources, and checking for necessary updates.
