@@ -143,15 +143,15 @@ However, even after publishing your revocation certificate, others will still be
 To generate the revocation certificate, you will need your GPG key's user ID information -- either name, email, or the key ID. So open up a Terminal window and type one of the following, depending on the info you choose to feed the command with:
 
 ```
-$ gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke "Your Name"
+$ gpg --output ~/.gnupg/revocable/revoke.asc --gen-revoke "Your Name"
 ```
 OR
 ```
-$ gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke your.email@example.com
+$ gpg --output ~/.gnupg/revocable/revoke.asc --gen-revoke your.email@example.com
 ```
 OR
 ```
-$ gpg --output ~/gnupg/revocable/revoke.asc --gen-revoke keyID
+$ gpg --output ~/.gnupg/revocable/revoke.asc --gen-revoke keyID
 ```
 If you can't remember, you can grab your KeyID with the command `gpg --list-secret-keys --keyid-format=long`. It will be next to `sec`, right after the key type you have, for example `rsa2048/<your-key-id>`.
 
