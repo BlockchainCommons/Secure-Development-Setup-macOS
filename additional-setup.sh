@@ -168,20 +168,6 @@ if [[ $(command -v git) == "" ]]; then
     logk
 fi
 
-# Setup Git
-if [[ $(git config user.name) == "" && $(git config user.email) == "" ]]; then
-    log "**************************"
-    log "No git credentials configured!"
-    logn "What's your GitHub username? "
-    read GITHUB_NAME
-    logn "What's your GitHub account email? "
-    read GITHUB_EMAIL
-    log "Configuring Git..."
-    git config --global user.name "$GITHUB_NAME"
-    git config --global user.email $GITHUB_EMAIL
-    logk
-fi
-
 # Squelch git 2.x warning message when pushing
 if ! git config push.default >/dev/null; then
     git config --global push.default simple
@@ -197,7 +183,7 @@ if [[ $(command -v gh) == "" ]]; then
 fi
 
 # Log into gh
-if !(gh auth status --hostname "github.com" > /dev/null 2>&1); then
+if ! (gh auth status --hostname "github.com" > /dev/null 2>&1); then
     log "**************************"
     log "You are not logged into gh!"
     log "Authenticate gh and set SSH as default."
@@ -223,7 +209,9 @@ if [[ $(ls -a ~/ | grep .zshrc) == "" ]]; then
 fi
 
 # Add path used for `brew` formulae
-echo 'export PATH="/usr/local/sbin:$PATH"' >> ~/.zshrc
+# TODO: This is not correct for m1 macs. Should use some form of $(brew --prefix)
+# TODO: ... but not sure this is best practice replacement to fix this:
+echo 'export PATH="/usr/local/sbin:/opt/homebrew/sbin:$PATH"' >> ~/.zshrc
 
 # Install GPG and pinentry-mac
 if [[ $(command -v gpg) == "" ]]; then
@@ -317,8 +305,30 @@ else
     fi
 fi
 
+# Setup git user.name & user.email based on information in GPG key
+if [[ $(git config user.name) == "" && $(git config user.email) == "" ]]; then
+
+    GITHUB_NAME=$(
+    echo $GITHUB_PUBLIC_KEY |
+        gpg --list-packets --textmode |
+        sed -n -E 's/^:user ID packet: "(.*)"$/\1/p' |
+        awk -F'<|>' '{print $1}'
+    )
+
+    GITHUB_EMAIL=$(
+    echo $GITHUB_PUBLIC_KEY |
+        gpg --list-packets --textmode |
+        sed -n -E 's/^:user ID packet: "(.*)"$/\1/p' |
+        awk -F'<|>' '{print $2}'
+    )
+    log "Configuring git user.name and user.name to match gpg key..."
+    git config --global user.name "$GITHUB_NAME"
+    git config --global user.email $GITHUB_EMAIL
+    logk
+fi
+
 # Use pinentry-mac https://github.com/Homebrew/homebrew-core/issues/14737#issuecomment-309547412
-echo "pinentry-program /usr/local/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
+echo "pinentry-program $(brew --prefix)/bin/pinentry-mac" >> ~/.gnupg/gpg-agent.conf
 killall gpg-agent
 
 # Tell GnuPG to always use the longer, more secure 16-character key IDs
